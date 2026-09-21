@@ -88,7 +88,8 @@ export function SiteFooter() {
           </p>
           <p className="max-w-md text-pretty sm:text-right">
             Servicios de asistencia logística y seguridad privada en rutas. No
-            constituye servicio de seguridad pública ni fuerza policial.
+            constituye servicio de seguridad pública ni fuerza policial, ni
+            es un seguro: BOPE no cubre el valor del vehículo ni de la carga.
           </p>
         </div>
       </div>

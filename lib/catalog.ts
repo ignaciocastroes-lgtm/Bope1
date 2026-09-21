@@ -1,18 +1,21 @@
 /**
- * Catálogo de equipos de la alianza BOPE × NovaSat GPS (venta a clientes
- * particulares, B2C). NO forma parte de los servicios B2B de BOPE.
+ * Catálogo de equipos GPS de BOPE Security (venta a clientes particulares).
  *
  * REGLA DE PUBLICACIÓN: un equipo entra aquí solo si tiene ficha técnica
  * verificada Y opera en red 4G. Sin ficha, no se publica. Los equipos que
  * solo funcionan en 2G tampoco: en Chile las redes 2G y 3G se están apagando
  * y esos aparatos quedan sin conexión.
  *
- * Los precios NO se publican: BOPE fija su propio precio (equipo +
- * instalación) al cotizar. Tampoco se publican los planes de datos (SIM);
- * basta con decir que se asesora.
+ * No se publica el nombre del proveedor. Tampoco los precios: BOPE fija su
+ * propio precio (equipo + instalación) al cotizar. Los planes de datos (SIM)
+ * tampoco se publican; basta decir que se asesora.
  *
- * Para agregar un equipo: completar `name`, `category` y `spec` (la ficha,
- * con la red indicada). Para quitarlo, borrar su línea.
+ * Fotos: guardar el archivo en `public/catalog/` (idealmente .webp, cuadrado o
+ * 4:3, fondo blanco o transparente, unos 800 px) y completar `image` con su
+ * ruta. Si `image` no está, la tarjeta muestra un ícono en su lugar.
+ *
+ * Para agregar un equipo: completar `id`, `name`, `category` y `spec` (la
+ * ficha, con la red indicada). Para quitarlo, borrar su línea.
  */
 
 export type CategoryId = 'vehiculo'
@@ -23,9 +26,9 @@ export type Product = {
   category: CategoryId
   /** Ficha corta verificada, con la red. Obligatoria. */
   spec: string
+  /** Foto opcional, ej. '/catalog/gps-r12l.webp'. */
+  image?: string
 }
-
-export const SUPPLIER_NAME = 'NovaSat GPS'
 
 export const CATEGORIES: { id: CategoryId; label: string }[] = [
   { id: 'vehiculo', label: 'GPS para vehículo' },

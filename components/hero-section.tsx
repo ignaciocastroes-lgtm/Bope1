@@ -11,7 +11,7 @@ const telemetry = [
   { icon: Signal, label: 'GPS', value: 'LOCK 97°E' },
   { icon: Navigation, label: 'Ruta', value: '78 · Autopista del Sol' },
   { icon: Gauge, label: 'Velocidad', value: '92.9 km/h' },
-  { icon: Radar, label: 'Status', value: 'EN RUTA PROTEGIDA' },
+  { icon: Radar, label: 'Status', value: 'EN RUTA · MONITOREADA' },
 ]
 
 export function HeroSection() {
@@ -138,7 +138,7 @@ export function HeroSection() {
             ¿Buscas un GPS para tu auto?{' '}
             <button
               type="button"
-              onClick={openQuote}
+              onClick={() => openQuote()}
               className="font-medium text-gold underline-offset-4 hover:underline"
             >
               Ver catálogo y cotizar

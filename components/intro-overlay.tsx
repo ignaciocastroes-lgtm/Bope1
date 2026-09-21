@@ -8,9 +8,10 @@ import { BopeLogo } from '@/components/brand'
  * el overlay se disuelve y queda el sitio.
  *
  * Reglas:
- * - Dura MÁXIMO 4 segundos. La secuencia dura 2,7 s; antes de arrancar espera
- *   hasta 0,5 s a que las fotos estén decodificadas para que el fundido no se
- *   corte. Un techo duro cierra todo a los 4 s pase lo que pase.
+ * - Dura 7 segundos como máximo. La secuencia dura 6,4 s (amanecer, noche,
+ *   águila, disolución); antes de arrancar espera hasta 0,5 s a que las fotos
+ *   estén decodificadas para que el fundido no se corte. Un techo duro cierra
+ *   todo a los 7 s pase lo que pase.
  * - Arranca sola, sin esperar gestos. Un toque en cualquier parte, el botón
  *   “Saltar” o la tecla Escape la cierran al instante.
  * - Solo se animan opacidad y transform (baratos para la GPU); no hay
@@ -21,17 +22,19 @@ import { BopeLogo } from '@/components/brand'
  */
 
 const STORAGE_KEY = 'bope-intro'
-const MAX_TOTAL_MS = 4000 // techo absoluto desde que carga la página
+const MAX_TOTAL_MS = 7000 // techo absoluto desde que carga la página
 const PRELOAD_WAIT_MS = 500 // espera máxima a que decodifiquen las fotos
 
-// Secuencia (ms) desde que arranca. Total: 700 + 700 + 700 + 600 = 2700.
-const NIGHT_MS = 1400 // fundido día → noche
-const LOGO_AT = 700 // cuándo entra el águila
-const LOGO_MS = 700 // duración del fundido del águila
-const HOLD_MS = 700 // el águila se queda antes de disolver
-const OUT_MS = 600 // disolución del overlay
+// Secuencia (ms) desde que arranca. El amanecer se ve solo, cae la noche, entra
+// el águila y todo se disuelve. Total: 2600 + 1200 + 1700 + 900 = 6400.
+const NIGHT_AT = 800 // el día se sostiene antes de oscurecer
+const NIGHT_MS = 2200 // fundido día → noche
+const LOGO_AT = 2600 // el águila entra cuando la noche ya casi cae
+const LOGO_MS = 1200 // duración del fundido del águila
+const HOLD_MS = 1700 // el águila se queda antes de disolver
+const OUT_MS = 900 // disolución del overlay
 
-type Phase = 'wait' | 'night' | 'logo' | 'out' | 'done'
+type Phase = 'wait' | 'day' | 'night' | 'logo' | 'out' | 'done'
 
 const imgClass =
   'absolute inset-0 h-full w-full object-cover [object-position:56%_50%] landscape:[object-position:56%_58%]'
@@ -66,8 +69,9 @@ export function IntroOverlay() {
     startedRef.current = true
     const f = reducedRef.current ? 0.3 : 1
     setOutMs(OUT_MS * f)
-    setPhase('night')
+    setPhase('day')
     timers.current.push(
+      window.setTimeout(() => setPhase('night'), NIGHT_AT * f),
       window.setTimeout(() => setPhase('logo'), LOGO_AT * f),
       window.setTimeout(() => setPhase('out'), (LOGO_AT + LOGO_MS + HOLD_MS) * f),
       window.setTimeout(finish, (LOGO_AT + LOGO_MS + HOLD_MS + OUT_MS) * f),
@@ -126,7 +130,7 @@ export function IntroOverlay() {
   if (phase === 'done') return null
 
   const f = reducedRef.current ? 0.3 : 1
-  const nightOn = phase !== 'wait'
+  const nightOn = phase === 'night' || phase === 'logo' || phase === 'out'
   const logoOn = phase === 'logo' || phase === 'out'
 
   return (
@@ -163,7 +167,7 @@ export function IntroOverlay() {
             className={imgClass}
             style={{
               opacity: nightOn ? 1 : 0,
-              transition: `opacity ${NIGHT_MS * f}ms cubic-bezier(0.45, 0, 0.2, 1)`,
+              transition: `opacity ${NIGHT_MS * f}ms cubic-bezier(0.4, 0, 0.2, 1)`,
             }}
           />
         </picture>

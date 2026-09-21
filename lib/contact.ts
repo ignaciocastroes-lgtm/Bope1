@@ -27,8 +27,16 @@ export const hasWhatsApp = digits.length >= 10
 
 export const OPEN_QUOTE_EVENT = 'open-quote-modal'
 
-export function openQuote() {
-  window.dispatchEvent(new Event(OPEN_QUOTE_EVENT))
+export type QuotePreset = {
+  /** Equipos del catálogo ya elegidos. */
+  productIds?: string[]
+  /** Nivel de protección elegido en la animación del camión. */
+  nivel?: string
+}
+
+/** Abre el modal de cotización, opcionalmente con equipos o nivel ya elegidos. */
+export function openQuote(preset?: QuotePreset) {
+  window.dispatchEvent(new CustomEvent<QuotePreset | undefined>(OPEN_QUOTE_EVENT, { detail: preset }))
 }
 
 export const MESSAGES = {

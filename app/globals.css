@@ -116,7 +116,7 @@ html[data-intro='seen'] #intro {
   to { transform: scale(1.07); }
 }
 .intro-drift {
-  animation: intro-drift 4s ease-out forwards;
+  animation: intro-drift 7s ease-out forwards;
   will-change: transform;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -125,8 +125,8 @@ html[data-intro='seen'] #intro {
   }
 }
 
-/* Red de seguridad sin JavaScript: si la intro no logra cerrarse, a los 6 s
-   se oculta y se libera el scroll (la intro dura como máximo 4 s). */
+/* Red de seguridad sin JavaScript: si la intro no logra cerrarse, a los 9 s
+   se oculta y se libera el scroll (la intro dura como máximo 7 s). */
 @keyframes intro-failsafe {
   to { opacity: 0; visibility: hidden; pointer-events: none; }
 }
@@ -134,10 +134,10 @@ html[data-intro='seen'] #intro {
   to { overflow: auto; }
 }
 #intro {
-  animation: intro-failsafe 0.01s 6s forwards;
+  animation: intro-failsafe 0.01s 9s forwards;
 }
 html[data-intro='playing'] {
-  animation: intro-unlock 0.01s 6s forwards;
+  animation: intro-unlock 0.01s 9s forwards;
 }
 
 
@@ -150,4 +150,91 @@ html {
   html {
     scroll-behavior: auto;
   }
+}
+
+
+/* ---- Camión: niveles de protección ---- */
+.truck-body { stroke: #3a3d47; transition: stroke 0.6s ease; }
+.truck-body[data-lit='true'] { stroke: var(--gold); }
+.truck-inner { stroke: #2a2c34; transition: stroke 0.6s ease; }
+.truck-inner[data-lit='true'] { stroke: var(--gold-muted); }
+
+.truck-dev { fill: #0d0e12; stroke: #3a3d47; transition: fill 0.5s ease, stroke 0.5s ease; }
+.truck-dev[data-on='true'] { fill: rgba(212, 175, 55, 0.14); stroke: var(--gold); }
+.truck-dev-hidden { stroke-dasharray: 4 3; }
+
+.truck-marker { transition: opacity 0.4s ease; }
+.truck-marker .truck-dot { fill: #121214; stroke: #52525b; transition: fill 0.5s ease, stroke 0.5s ease; }
+.truck-marker .truck-num { fill: #71717a; transition: fill 0.5s ease; }
+.truck-marker .truck-hid { stroke: var(--gold-muted); opacity: 0; transition: opacity 0.5s ease; }
+.truck-marker .truck-pulse { fill: none; stroke: var(--gold); opacity: 0; }
+.truck-marker[data-on='true'] .truck-dot { fill: var(--gold); stroke: var(--gold); }
+.truck-marker[data-on='true'] .truck-num { fill: #09090b; }
+.truck-marker[data-on='true'] .truck-hid { opacity: 1; }
+.truck-marker[data-fresh='true'] .truck-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: truck-pulse 1.6s ease-out 3;
+}
+@keyframes truck-pulse {
+  from { transform: scale(1); opacity: 0.8; }
+  to { transform: scale(2.6); opacity: 0; }
+}
+
+.truck-wire { stroke: #3a3d47; stroke-dasharray: 6 8; opacity: 0.5; transition: stroke 0.5s ease, opacity 0.5s ease; }
+.truck-wire[data-on='true'] { stroke: var(--gold); opacity: 1; animation: truck-flow 1.2s linear infinite; }
+@keyframes truck-flow { to { stroke-dashoffset: -28; } }
+
+.truck-wave { stroke: var(--gold); opacity: 0; }
+.truck-wave[data-on='true'] { animation: truck-wave 2.2s ease-in-out infinite; }
+.truck-wave-2[data-on='true'] { animation-delay: 0.6s; }
+@keyframes truck-wave {
+  0%, 100% { opacity: 0; }
+  40% { opacity: 0.9; }
+}
+
+/* Auditoría (siempre activa) y enlaces hacia ella */
+.truck-audit path:first-child { fill: rgba(212, 175, 55, 0.14); stroke: var(--gold); }
+.truck-audit path:last-child { stroke: var(--gold); }
+.truck-link { stroke: #3a3d47; stroke-dasharray: 5 7; opacity: 0.4; transition: stroke 0.5s ease, opacity 0.5s ease; }
+.truck-link[data-on='true'] { stroke: var(--gold); opacity: 1; animation: truck-flow 1.2s linear infinite; }
+.truck-link[data-blocked='true'] { stroke: var(--amber); opacity: 0.45; }
+
+/* Puerta trasera: abierta (niveles 1-2) y cerrada (nivel 3 en adelante) */
+.truck-door {
+  stroke: #3a3d47;
+  transform-box: fill-box;
+  transform-origin: right center;
+  transform: scaleX(0.16);
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.6s ease, fill 0.6s ease;
+}
+.truck-door[data-closed='true'] {
+  transform: scaleX(1);
+  stroke: var(--gold);
+  fill: #23211a;
+}
+
+/* Nivel 4: las ondas celulares se marcan bloqueadas y el enlace satelital sube */
+.truck-wave[data-blocked='true'] { stroke: var(--amber); }
+.truck-block { opacity: 0; transition: opacity 0.5s ease; }
+.truck-block[data-on='true'] { opacity: 1; }
+.truck-block path { stroke: var(--amber); }
+
+.truck-mast { stroke: #3a3d47; transition: stroke 0.5s ease; }
+.truck-mast[data-on='true'] { stroke: var(--gold); }
+
+.truck-sat { fill: #15161b; stroke: #3a3d47; stroke-width: 2; opacity: 0.35; transition: opacity 0.6s ease, stroke 0.6s ease; }
+.truck-sat[data-on='true'] { opacity: 1; stroke: var(--gold); }
+.truck-beam { stroke: #3a3d47; stroke-dasharray: 5 7; opacity: 0.3; transition: stroke 0.5s ease, opacity 0.5s ease; }
+.truck-beam[data-on='true'] { stroke: var(--gold); opacity: 1; animation: truck-flow 1s linear infinite reverse; }
+
+@media (prefers-reduced-motion: reduce) {
+  .truck-beam[data-on='true'],
+  .truck-link[data-on='true'],
+  .truck-marker[data-fresh='true'] .truck-pulse,
+  .truck-wire[data-on='true'],
+  .truck-wave[data-on='true'] {
+    animation: none;
+  }
+  .truck-wave[data-on='true'] { opacity: 0.7; }
 }

@@ -107,8 +107,8 @@ export default function ArquitecturaLegalPage() {
             Arquitectura Legal y Cumplimiento Normativo
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-            Diseñamos tecnología que protege tus activos físicos y blinda tu
-            responsabilidad penal y laboral en Chile.
+            Diseñamos tecnología para que el monitoreo GPS y la evidencia se
+            ajusten a la normativa penal y laboral en Chile.
           </p>
         </div>
       </section>

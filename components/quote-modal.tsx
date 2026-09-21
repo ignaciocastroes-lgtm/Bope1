@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X, Send, Check, ArrowLeft, ArrowRight } from 'lucide-react'
-import { OPEN_QUOTE_EVENT, hasWhatsApp, sendLead } from '@/lib/contact'
-import { CATEGORIES, PRODUCTS, SUPPLIER_NAME, productName, type CategoryId } from '@/lib/catalog'
+import { OPEN_QUOTE_EVENT, hasWhatsApp, sendLead, type QuotePreset } from '@/lib/contact'
+import Image from 'next/image'
+import { CATEGORIES, PRODUCTS, productName, type CategoryId } from '@/lib/catalog'
 
 type Step = 'catalog' | 'form' | 'sent'
 
@@ -21,6 +22,7 @@ export function QuoteModal() {
   const [step, setStep] = useState<Step>('catalog')
   const [category, setCategory] = useState<CategoryId>('vehiculo')
   const [selected, setSelected] = useState<string[]>([])
+  const [nivel, setNivel] = useState<string | null>(null)
   const [sentVia, setSentVia] = useState<'whatsapp' | 'correo' | null>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
   const returnFocusRef = useRef<HTMLElement | null>(null)
@@ -28,9 +30,13 @@ export function QuoteModal() {
   const close = useCallback(() => setOpen(false), [])
 
   useEffect(() => {
-    const handler = () => {
+    const handler = (e: Event) => {
+      const preset = (e as CustomEvent<QuotePreset | undefined>).detail
       returnFocusRef.current = document.activeElement as HTMLElement | null
-      setStep('catalog')
+      setSelected(preset?.productIds ?? [])
+      setNivel(preset?.nivel ?? null)
+      // Con un equipo o un nivel ya elegido se salta directo a los datos.
+      setStep(preset?.productIds?.length || preset?.nivel ? 'form' : 'catalog')
       setSentVia(null)
       setOpen(true)
     }
@@ -98,6 +104,7 @@ export function QuoteModal() {
     const get = (k: string) => String(f.get(k) ?? '').trim()
 
     const parts: string[] = [`Nombre: ${get('nombre')}`]
+    if (nivel) parts.push(`Nivel de protección: ${nivel}`)
     parts.push(
       selected.length > 0
         ? `Equipos de interés: ${selected.map(productName).join(', ')}`
@@ -145,7 +152,7 @@ export function QuoteModal() {
             <div className="flex items-start justify-between gap-4 border-b border-border/60 p-5 sm:p-6">
               <div>
                 <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-gold">
-                  Alianza BOPE × {SUPPLIER_NAME}
+                  Equipos GPS · BOPE Security
                 </p>
                 <h2
                   id="quote-title"
@@ -207,6 +214,11 @@ export function QuoteModal() {
                                 : 'border-border bg-card hover:border-gold/40'
                             }`}
                           >
+                            {p.image && (
+                              <span className="relative mb-3 block aspect-[4/3] w-full overflow-hidden rounded-lg bg-white/95">
+                                <Image src={p.image} alt="" fill sizes="(min-width: 640px) 200px, 45vw" className="object-contain p-2" />
+                              </span>
+                            )}
                             <span className="flex w-full items-start justify-between gap-2">
                               <span className="font-sans text-base font-semibold leading-tight text-foreground">
                                 {p.name}
@@ -263,6 +275,11 @@ export function QuoteModal() {
               <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col">
                 <div className="flex-1 overflow-y-auto p-5 sm:p-6">
                   <div className="mb-5 flex flex-wrap items-center gap-2">
+                    {nivel && (
+                      <span className="rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-xs font-medium text-gold">
+                        {nivel}
+                      </span>
+                    )}
                     {selected.length > 0 ? (
                       selected.map((id) => (
                         <span
@@ -273,9 +290,11 @@ export function QuoteModal() {
                         </span>
                       ))
                     ) : (
-                      <span className="text-xs text-muted-foreground">
-                        Sin equipo elegido: te ayudamos a escoger.
-                      </span>
+                      !nivel && (
+                        <span className="text-xs text-muted-foreground">
+                          Sin equipo elegido: te ayudamos a escoger.
+                        </span>
+                      )
                     )}
                     <button
                       type="button"
