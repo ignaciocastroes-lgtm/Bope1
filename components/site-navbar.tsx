@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Menu, MessageCircle, X } from 'lucide-react'
+import { AboutModal } from '@/components/about-modal'
 import { BopeLogo } from '@/components/brand'
 import { cn } from '@/lib/utils'
 import { OPEN_PROMO_EVENT } from '@/components/promo-modal'
@@ -24,6 +25,7 @@ const links = [
 
 export function SiteNavbar() {
   const [open, setOpen] = useState(false)
+  const [aboutOpen, setAboutOpen] = useState(false)
 
   // Escape cierra el menú móvil.
   useEffect(() => {
@@ -37,18 +39,19 @@ export function SiteNavbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#inicio" aria-label="BOPE Security, volver al inicio" className="flex items-center gap-3">
-          <BopeLogo className="h-11 w-auto" priority />
-          <span className="flex flex-col leading-none">
-            <span className="font-sans text-base font-semibold tracking-[0.18em] text-foreground">
-              BOPE SECURITY
-            </span>
-            <span className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
-              Asistencia y Monitoreo GPS
-            </span>
+      <div className="mx-auto flex min-h-16 max-w-7xl flex-wrap items-center justify-between gap-y-2 px-4 py-2 sm:px-6 lg:flex-nowrap lg:px-8">
+        <button
+          type="button"
+          onClick={() => setAboutOpen(true)}
+          aria-haspopup="dialog"
+          aria-label="Quiénes somos: misión, visión y valores de BOPE Security"
+          className="group flex shrink-0 items-center gap-2.5 rounded-md py-1 pr-2 transition-colors hover:bg-secondary/60"
+        >
+          <BopeLogo className="h-10 w-auto" priority />
+          <span className="font-sans text-sm font-semibold tracking-[0.18em] text-foreground transition-colors group-hover:text-gold">
+            BOPE SECURITY
           </span>
-        </a>
+        </button>
 
         <nav className="hidden items-center gap-6 xl:gap-8 lg:flex">
           {links.map((l) => (
@@ -101,6 +104,8 @@ export function SiteNavbar() {
           </button>
         </div>
       </div>
+
+      <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} />
 
       <div
         id="menu-movil"

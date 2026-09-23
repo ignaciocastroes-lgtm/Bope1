@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, Target, Eye, ListChecks } from 'lucide-react'
+import { X, Target, Eye, ListChecks, ArrowRight, MessageCircle } from 'lucide-react'
 import { useState } from 'react'
 import { ValuesWheel } from '@/components/values-wheel'
 import { MISSION, OBJECTIVES, POLICY_PARAGRAPHS, QUOTE, VISION } from '@/lib/company'
+import { MESSAGES, leadProps } from '@/lib/contact'
 
 /** Modal "Nosotros": misión, visión, valores y objetivos, fuera del scroll del index. */
 export function AboutModal({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -180,6 +181,21 @@ export function AboutModal({ open, onClose }: { open: boolean; onClose: () => vo
                     {showPolicy ? 'Ver menos' : 'Ver política completa'}
                   </button>
                 </div>
+              </div>
+
+              {/* De "quiénes somos" a hablar con alguien, sin tener que cerrar y buscar el botón */}
+              <div className="mt-8 flex flex-col items-center gap-3 rounded-xl border border-gold/30 bg-gold/5 p-5 text-center sm:flex-row sm:justify-between sm:text-left">
+                <p className="text-pretty text-sm leading-relaxed text-foreground/90">
+                  ¿Quieres contarnos tu caso? Hablamos directo, sin formularios largos.
+                </p>
+                <a
+                  {...leadProps(MESSAGES.expert, '/#contacto')}
+                  className="group inline-flex shrink-0 items-center gap-2 rounded-md bg-gold px-5 py-2.5 text-xs font-semibold uppercase tracking-widest text-primary-foreground transition-all hover:gold-glow"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Hablar con un experto
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                </a>
               </div>
             </div>
           </motion.div>
