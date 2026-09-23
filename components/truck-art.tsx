@@ -8,17 +8,25 @@ import { activePoints, LEVELS, type LevelId, type PointId } from '@/lib/security
 
 const SLATE = '#3a3d47'
 
-type Pt = { id: PointId; x: number; y: number; w: number; h: number; hidden?: boolean }
+/**
+ * Un punto sabe su posición y qué tipo de señal usa. `kind` es lo único que
+ * distingue al satélite (7) del resto: todo lo que sea 'rf' cae dentro del
+ * radio de un inhibidor; 'satellite' es la única excepción. Antes ese
+ * "salvo el 7" estaba repetido a mano en varios lugares del archivo; ahora
+ * se lee una sola vez, aquí.
+ */
+type SignalKind = 'rf' | 'satellite'
+type Pt = { id: PointId; x: number; y: number; w: number; h: number; hidden?: boolean; kind: SignalKind }
 
 // Centro de cada equipo y tamaño de su carcasa.
 const PTS: Pt[] = [
-  { id: 1, x: 236, y: 212, w: 32, h: 18 },
-  { id: 2, x: 258, y: 258, w: 28, h: 16, hidden: true },
-  { id: 3, x: 520, y: 40, w: 0, h: 0 },
-  { id: 4, x: 772, y: 232, w: 42, h: 54 },
-  { id: 5, x: 470, y: 328, w: 36, h: 16, hidden: true },
-  { id: 6, x: 824, y: 192, w: 12, h: 30 },
-  { id: 7, x: 700, y: 40, w: 0, h: 0 },
+  { id: 1, x: 236, y: 212, w: 32, h: 18, kind: 'rf' },
+  { id: 2, x: 258, y: 258, w: 28, h: 16, hidden: true, kind: 'rf' },
+  { id: 3, x: 520, y: 40, w: 0, h: 0, kind: 'rf' },
+  { id: 4, x: 772, y: 232, w: 42, h: 54, kind: 'rf' },
+  { id: 5, x: 470, y: 328, w: 36, h: 16, hidden: true, kind: 'rf' },
+  { id: 6, x: 824, y: 192, w: 12, h: 30, kind: 'rf' },
+  { id: 7, x: 700, y: 40, w: 0, h: 0, kind: 'satellite' },
 ]
 
 export function TruckArt({
@@ -43,6 +51,22 @@ export function TruckArt({
   const on = new Set(activePoints(level))
   const isOn = (id: PointId) => on.has(id)
   const isFresh = (id: PointId) => fresh.includes(id)
+
+  /**
+   * Un solo lugar donde se decide qué le pasa a cada punto durante la
+   * simulación de robo, en vez de repetir "jammed && isOn(id) && no es el
+   * satélite" cada vez que hace falta. Si mañana se agrega un punto o un
+   * tipo de señal nuevo, se ajusta acá y todo el dibujo lo hereda.
+   */
+  const isJammedNow = (id: PointId) =>
+    jammed && isOn(id) && (PTS.find((p) => p.id === id)?.kind ?? 'rf') === 'rf'
+
+  // Estados con nombre propio: más fácil de leer en el SVG que un booleano
+  // suelto, y evita recalcular la misma condición en dos sitios distintos.
+  const cellularBlocked = jammed
+  const auditLinkOn = !jammed
+  const satelliteLinkOn = jammed && isOn(7)
+  const showSatellitePings = pings && satelliteLinkOn
 
   return (
     <svg
@@ -138,13 +162,13 @@ export function TruckArt({
 
       {/* Antena en el techo + ondas */}
       <ellipse className="truck-dev" data-on={isOn(3)} cx={520} cy={66} rx={24} ry={9} strokeWidth={2} />
-      <path className="truck-wave truck-wave-1" data-on={isOn(3) && !jammed} data-blocked={jammed} d="M 500 22 Q 520 8 540 22" fill="none" strokeWidth={2} strokeLinecap="round" />
-      <path className="truck-wave truck-wave-2" data-on={isOn(3) && !jammed} data-blocked={jammed} d="M 490 12 Q 520 -8 550 12" fill="none" strokeWidth={2} strokeLinecap="round" />
+      <path className="truck-wave truck-wave-1" data-on={isOn(3) && !cellularBlocked} data-blocked={cellularBlocked} d="M 500 22 Q 520 8 540 22" fill="none" strokeWidth={2} strokeLinecap="round" />
+      <path className="truck-wave truck-wave-2" data-on={isOn(3) && !cellularBlocked} data-blocked={cellularBlocked} d="M 490 12 Q 520 -8 550 12" fill="none" strokeWidth={2} strokeLinecap="round" />
 
       {/* Sistema de auditoría (incluido desde el nivel 1) y sus enlaces */}
       <path
         className="truck-link"
-        data-on={!jammed}
+        data-on={auditLinkOn}
         data-blocked={jammed}
         d="M 500 28 Q 330 -70 172 -36"
         fill="none"
@@ -153,7 +177,7 @@ export function TruckArt({
       />
       <path
         className="truck-link"
-        data-on={jammed && isOn(7)}
+        data-on={satelliteLinkOn}
         d="M 726 -62 Q 460 -108 168 -48"
         fill="none"
         strokeWidth={2}
@@ -165,7 +189,7 @@ export function TruckArt({
       </g>
 
       {/* Insistir: consulta de posición hacia el equipo y respuesta hasta la auditoría */}
-      {pings && jammed && isOn(7) && (
+      {showSatellitePings && (
         <>
           <circle r={5} fill="none" stroke="var(--gold)" strokeWidth={2} opacity={0}>
             <animateMotion
@@ -199,7 +223,7 @@ export function TruckArt({
       )}
 
       {/* Bloqueo celular: la señal de la antena 3 queda tachada mientras dura la simulación */}
-      <g className="truck-block" data-on={jammed}>
+      <g className="truck-block" data-on={cellularBlocked}>
         <path d="M 550 4 L 566 20 M 566 4 L 550 20" strokeWidth={3} strokeLinecap="round" fill="none" />
       </g>
 
@@ -254,7 +278,7 @@ export function TruckArt({
           key={p.id}
           className={`truck-dev${p.hidden ? ' truck-dev-hidden' : ''}`}
           data-on={isOn(p.id)}
-          data-jammed={jammed && isOn(p.id) && p.id !== 7}
+          data-jammed={isJammedNow(p.id)}
           x={p.x - p.w / 2}
           y={p.y - p.h / 2}
           width={p.w}
@@ -270,7 +294,7 @@ export function TruckArt({
           key={p.id}
           className="truck-marker"
           data-on={isOn(p.id)}
-          data-jammed={jammed && isOn(p.id) && p.id !== 7}
+          data-jammed={isJammedNow(p.id)}
           data-fresh={isOn(p.id) && isFresh(p.id)}
           transform={`translate(${p.x} ${p.y})`}
         >

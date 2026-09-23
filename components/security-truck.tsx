@@ -93,7 +93,7 @@ export function SecurityTruck({
   }
   useEffect(() => {
     if (robbery === 'idle') return
-    const ms = robbery === 'jamming' ? (reduce ? 800 : 4200) : reduce ? 400 : 3000
+    const ms = robbery === 'jamming' ? (reduce ? 1600 : 7000) : reduce ? 1200 : 5000
     const t = window.setTimeout(() => {
       setRobbery((r) => (r === 'jamming' ? 'recovered' : 'idle'))
     }, ms)

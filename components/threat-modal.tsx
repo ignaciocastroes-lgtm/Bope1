@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, ArrowRight, Users } from 'lucide-react'
+import { X, ArrowRight, ChevronDown, Users } from 'lucide-react'
 import { THREATS } from '@/lib/threats'
 import { MESSAGES, leadProps } from '@/lib/contact'
 import { SecurityTruck } from '@/components/security-truck'
@@ -19,6 +19,7 @@ export function ActionPlanModal({ open, onClose }: { open: boolean; onClose: () 
   const truckRef = useRef<HTMLDivElement>(null)
   const returnFocusRef = useRef<HTMLElement | null>(null)
   const [jumpTo, setJumpTo] = useState<{ level: LevelId; token: number } | null>(null)
+  const [openThreat, setOpenThreat] = useState<string | null>(null)
 
   const close = useCallback(() => {
     onClose()
@@ -112,36 +113,74 @@ export function ActionPlanModal({ open, onClose }: { open: boolean; onClose: () 
                 Nuestro plan de acción
               </h2>
               <p className="mt-3 text-pretty text-sm leading-relaxed text-muted-foreground">
-                Sin manual ni pasos: solo lo que necesitas entender para elegir bien tu nivel de
-                protección, y por qué la tecnología es solo una parte del plan.
+                Sin manual ni pasos: toca cada táctica para ver qué hacemos, o ve directo al
+                camión y al argumento de fondo, más abajo.
               </p>
 
-              <ul className="mt-6 space-y-4">
-                {THREATS.map((t) => (
-                  <li key={t.id} className="rounded-xl border border-border bg-card p-4 sm:p-5">
-                    <h3 className="font-sans text-base font-semibold text-foreground sm:text-lg">
-                      {t.title}
-                    </h3>
-                    <p className="mt-1.5 text-pretty text-sm leading-relaxed text-muted-foreground">
-                      {t.text}
-                    </p>
-                    <div className="mt-3 rounded-lg border border-gold/30 bg-gold/5 p-3">
-                      <p className="text-pretty text-sm leading-relaxed text-foreground/90">
-                        <span className="font-semibold text-gold">Qué hacemos: </span>
-                        {t.response}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => goToLevel(t.level)}
-                      className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-gold transition-colors hover:text-gold/80"
+              <div className="mt-6 space-y-2.5">
+                {THREATS.map((t) => {
+                  const isOpen = openThreat === t.id
+                  return (
+                    <div
+                      key={t.id}
+                      className={`rounded-xl border bg-card transition-colors ${
+                        isOpen ? 'border-gold/50' : 'border-border hover:border-gold/30'
+                      }`}
                     >
-                      Ver Nivel {t.level} en el camión
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
+                      <h3>
+                        <button
+                          type="button"
+                          id={`threat-btn-${t.id}`}
+                          aria-expanded={isOpen}
+                          aria-controls={`threat-panel-${t.id}`}
+                          onClick={() => setOpenThreat(isOpen ? null : t.id)}
+                          className="flex w-full items-center gap-3 p-4 text-left sm:p-5"
+                        >
+                          <span className="flex-1 font-sans text-sm font-semibold text-foreground sm:text-base">
+                            {t.title}
+                          </span>
+                          <ChevronDown
+                            className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform motion-reduce:transition-none ${
+                              isOpen ? 'rotate-180 text-gold' : ''
+                            }`}
+                          />
+                        </button>
+                      </h3>
+                      <div
+                        id={`threat-panel-${t.id}`}
+                        role="region"
+                        aria-labelledby={`threat-btn-${t.id}`}
+                        inert={!isOpen}
+                        className={`grid transition-[grid-template-rows] duration-300 motion-reduce:transition-none ${
+                          isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                        }`}
+                      >
+                        <div className="overflow-hidden">
+                          <div className="px-4 pb-4 sm:px-5 sm:pb-5">
+                            <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
+                              {t.text}
+                            </p>
+                            <div className="mt-3 rounded-lg border border-gold/30 bg-gold/5 p-3">
+                              <p className="text-pretty text-sm leading-relaxed text-foreground/90">
+                                <span className="font-semibold text-gold">Qué hacemos: </span>
+                                {t.response}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => goToLevel(t.level)}
+                              className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-gold transition-colors hover:text-gold/80"
+                            >
+                              Ver Nivel {t.level} en el camión
+                              <ArrowRight className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
 
               {/* El camión: la misma demostración, ahora dentro del plan de acción */}
               <div ref={truckRef} className="mt-8 scroll-mt-4">

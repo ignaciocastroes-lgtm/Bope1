@@ -198,7 +198,7 @@ html {
 .truck-audit path:last-child { stroke: var(--gold); }
 .truck-link { stroke: #3a3d47; stroke-dasharray: 5 7; opacity: 0.4; transition: stroke 0.5s ease, opacity 0.5s ease; }
 .truck-link[data-on='true'] { stroke: var(--gold); opacity: 1; animation: truck-flow 1.2s linear infinite; }
-.truck-link[data-blocked='true'] { stroke: var(--amber); opacity: 0.45; }
+.truck-link[data-blocked='true'] { stroke: var(--destructive); opacity: 0.45; }
 
 /* Puerta trasera: abierta (niveles 1-2) y cerrada (nivel 3 en adelante) */
 .truck-door {
@@ -215,10 +215,10 @@ html {
 }
 
 /* Nivel 4: las ondas celulares se marcan bloqueadas y el enlace satelital sube */
-.truck-wave[data-blocked='true'] { stroke: var(--amber); opacity: 0.55; animation: none; }
+.truck-wave[data-blocked='true'] { stroke: var(--destructive); opacity: 0.6; animation: none; }
 .truck-block { opacity: 0; transition: opacity 0.5s ease; }
 .truck-block[data-on='true'] { opacity: 1; }
-.truck-block path { stroke: var(--amber); }
+.truck-block path { stroke: var(--destructive); }
 
 .truck-mast { stroke: #3a3d47; transition: stroke 0.5s ease; }
 .truck-mast[data-on='true'] { stroke: var(--gold); }
@@ -228,16 +228,18 @@ html {
 .truck-beam { stroke: #3a3d47; stroke-dasharray: 5 7; opacity: 0.3; transition: stroke 0.5s ease, opacity 0.5s ease; }
 .truck-beam[data-on='true'] { stroke: var(--gold); opacity: 1; animation: truck-flow 1s linear infinite reverse; }
 
-/* Campo del inhibidor: cubre un radio del vehículo, no un solo punto. */
-.truck-jamfield { fill: rgba(245, 158, 11, 0.09); opacity: 0; transition: opacity 0.5s ease; }
+/* Campo del inhibidor: rojo = peligro/bloqueo (lo que provoca el ataque). El
+   dorado sigue siendo "lo nuestro" y el verde queda solo para el aparato del
+   atacante, así los tres colores no se pisan. */
+.truck-jamfield { fill: rgba(239, 68, 68, 0.10); opacity: 0; transition: opacity 0.5s ease; }
 .truck-jamfield[data-on='true'] { opacity: 1; }
 
 /* Equipos y marcadores dentro del radio del inhibidor: dejan de reportar
    mientras dura el bloqueo (el satélite, id 7, es la excepción). */
-.truck-dev[data-jammed='true'] { fill: rgba(245, 158, 11, 0.1); stroke: var(--amber); }
-.truck-marker[data-jammed='true'] .truck-dot { fill: rgba(245, 158, 11, 0.14); stroke: var(--amber); }
-.truck-marker[data-jammed='true'] .truck-num { fill: var(--amber); }
-.truck-marker[data-jammed='true'] .truck-hid { stroke: var(--amber); }
+.truck-dev[data-jammed='true'] { fill: rgba(239, 68, 68, 0.12); stroke: var(--destructive); }
+.truck-marker[data-jammed='true'] .truck-dot { fill: rgba(239, 68, 68, 0.16); stroke: var(--destructive); }
+.truck-marker[data-jammed='true'] .truck-num { fill: var(--destructive); }
+.truck-marker[data-jammed='true'] .truck-hid { stroke: var(--destructive); }
 
 /* El inhibidor/jammer del atacante: en verde, a propósito, para que se lea como
    "el otro bando" y no se confunda con el dorado del equipo propio. */
@@ -261,9 +263,9 @@ html {
 /* Simulación de robo: bloqueo de señal y buffer local mientras el equipo sigue midiendo */
 .truck-buffer { opacity: 0; transition: opacity 0.4s ease; }
 .truck-buffer[data-on='true'] { opacity: 1; }
-.truck-buffer circle:first-child { stroke: var(--amber); }
-.truck-buffer text { fill: var(--amber); }
-.truck-buffer-pulse { fill: none; stroke: var(--amber); opacity: 0; }
+.truck-buffer circle:first-child { stroke: var(--destructive); }
+.truck-buffer text { fill: var(--destructive); }
+.truck-buffer-pulse { fill: none; stroke: var(--destructive); opacity: 0; }
 .truck-buffer[data-on='true'] .truck-buffer-pulse {
   transform-box: fill-box;
   transform-origin: center;
