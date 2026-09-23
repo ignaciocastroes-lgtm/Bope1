@@ -162,11 +162,11 @@ export function SecurityTruck({
           )}
           <p className="text-pretty text-sm leading-relaxed text-foreground/90">
             {robbery === 'jamming' &&
-              'Simulando un inhibidor: la señal celular se corta ahora mismo…'}
+              'Simulando un inhibidor: corta la señal en todo su radio, no solo la antena…'}
             {robbery === 'recovered' &&
               (level === 4
-                ? 'El equipo siguió reportando por satélite durante todo el bloqueo. No se perdió nada.'
-                : 'Señal recuperada: el equipo entregó el tramo que guardó mientras estuvo bloqueado.')}
+                ? 'El satélite usa otra banda: siguió reportando durante todo el bloqueo. No se perdió nada.'
+                : 'Señal recuperada: el equipo entregó el tramo que guardó mientras estuvo bloqueado. Más antenas locales no habrían ayudado — todas caen en el mismo radio.')}
             {robbery === 'idle' &&
               'Simula un inhibidor y mira cómo intenta avisar el equipo en este nivel.'}
           </p>

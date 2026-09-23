@@ -30,9 +30,9 @@ export const THREATS: Threat[] = [
   {
     id: 'jamming',
     title: 'Bloquean la señal con un inhibidor',
-    text: 'Un inhibidor corta la señal celular y GPS del vehículo. El camión deja de aparecer en la pantalla, y nadie sabe si es una zona sin cobertura o un ataque en curso.',
+    text: 'Un inhibidor no apunta a un solo equipo: corta la señal celular y GPS en todo su radio, así que afecta por igual a la antena visible, a un GPS escondido y a los radios del conductor. En Chile, además, portarlo y usarlo ya es delito (Ley 21.720).',
     level: 4,
-    response: 'El plan satelital sigue reportando cuando la red celular está bloqueada, y cada corte y cada recuperación queda en la bitácora.',
+    response: 'Esconder más antenas no basta si todas caen dentro del mismo radio. Por eso el respaldo real está en el satélite, que usa una banda distinta y mucho más difícil de bloquear, y en un equipo que llega a terreno, que no depende de radiofrecuencia.',
   },
   {
     id: 'carga-directa',

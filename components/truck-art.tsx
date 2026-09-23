@@ -51,6 +51,9 @@ export function TruckArt({
       aria-label={`Camión de carga con los puntos de instalación del ${LEVELS[level - 1].name}`}
       className={className}
     >
+      {/* Campo del inhibidor: el bloqueo cubre un radio, no un solo punto */}
+      <ellipse className="truck-jamfield" data-on={jammed} cx={430} cy={140} rx={380} ry={230} />
+
       {/* Suelo */}
       <ellipse cx={470} cy={368} rx={400} ry={9} fill="#000" opacity={0.4} />
       <line x1={40} y1={364} x2={860} y2={364} stroke={SLATE} strokeWidth={2} />
@@ -205,21 +208,17 @@ export function TruckArt({
       {/* El "transform" de posición va en un <g> aparte: la animación CSS de
           aparición usa su propio "transform" (scale) y pisaría un translate
           puesto en el mismo elemento. */}
-      <g transform="translate(636 -18)">
+      <g transform="translate(646 -14)">
         <g className="truck-jammer" data-on={jammed}>
           <path
             className="truck-jammer-beam"
-            d="M -6 18 Q -46 26 -96 46"
+            d="M -5 13 Q -36 20 -78 38"
             fill="none"
-            strokeWidth={2}
+            strokeWidth={1.5}
             strokeLinecap="round"
           />
-          <path d="M -8 -8 L -13 -24 M 0 -10 L 0 -27 M 8 -8 L 13 -24" strokeWidth={2} strokeLinecap="round" fill="none" />
-          <rect x={-15} y={-8} width={30} height={20} rx={4} strokeWidth={2} />
-          <rect x={-9} y={-3} width={18} height={4} rx={1} strokeWidth={1} />
-          <text x={0} y={32} textAnchor="middle" fontSize={10} fontWeight={700} letterSpacing={0.5}>
-            JAMMER
-          </text>
+          <path d="M -6 -6 L -9 -17 M 0 -7 L 0 -19 M 6 -6 L 9 -17" strokeWidth={1.5} strokeLinecap="round" fill="none" />
+          <rect x={-11} y={-6} width={22} height={15} rx={3} strokeWidth={1.5} />
         </g>
       </g>
 
@@ -255,6 +254,7 @@ export function TruckArt({
           key={p.id}
           className={`truck-dev${p.hidden ? ' truck-dev-hidden' : ''}`}
           data-on={isOn(p.id)}
+          data-jammed={jammed && isOn(p.id) && p.id !== 7}
           x={p.x - p.w / 2}
           y={p.y - p.h / 2}
           width={p.w}
@@ -270,6 +270,7 @@ export function TruckArt({
           key={p.id}
           className="truck-marker"
           data-on={isOn(p.id)}
+          data-jammed={jammed && isOn(p.id) && p.id !== 7}
           data-fresh={isOn(p.id) && isFresh(p.id)}
           transform={`translate(${p.x} ${p.y})`}
         >
