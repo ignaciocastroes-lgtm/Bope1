@@ -1,11 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowRight, ChevronDown, Navigation, Signal, Gauge, Radar } from 'lucide-react'
+import { ChevronDown, Navigation, Signal, Gauge, Radar } from 'lucide-react'
 import { AboutModal } from '@/components/about-modal'
-import { QUOTE } from '@/lib/company'
 import { BopeLogo } from '@/components/brand'
 import { MESSAGES, leadProps, openQuote } from '@/lib/contact'
 
@@ -19,20 +18,10 @@ const telemetry = [
 export function HeroSection() {
   const ref = useRef<HTMLDivElement>(null)
   const [aboutOpen, setAboutOpen] = useState(false)
-  const [barVisible, setBarVisible] = useState(true)
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end start'],
   })
-
-  // La franja "Conócenos" vive dentro del hero; se retira justo antes de que
-  // aparezca el botón flotante de contacto, para que no se encimen en pantallas anchas.
-  useEffect(() => {
-    const onScroll = () => setBarVisible(window.scrollY <= window.innerHeight * 0.55)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '35%'])
   const bgScale = useTransform(scrollYProgress, [0, 1], [1.1, 1.3])
@@ -105,7 +94,7 @@ export function HeroSection() {
       {/* Foreground content */}
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-center px-4 pb-20 sm:px-6 sm:pb-16 lg:px-8"
+        className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-center px-4 sm:px-6 lg:px-8"
       >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -113,7 +102,16 @@ export function HeroSection() {
           transition={{ duration: 0.7 }}
           className="max-w-2xl"
         >
-          <BopeLogo variant="lg" priority className="mb-4 h-20 w-auto sm:h-28 lg:h-32" />
+          <button
+            type="button"
+            id="nosotros"
+            onClick={() => setAboutOpen(true)}
+            aria-haspopup="dialog"
+            aria-label="Quiénes somos: misión, visión y valores de BOPE Security"
+            className="group -ml-1 mb-4 inline-block rounded-lg p-1 transition-transform hover:scale-[1.03]"
+          >
+            <BopeLogo variant="lg" priority className="h-20 w-auto drop-shadow-[0_0_18px_rgba(212,175,55,0.25)] sm:h-28 lg:h-32" />
+          </button>
           <span className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-gold">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber" />
             Escolta · Monitoreo GPS · Equipos
@@ -161,38 +159,6 @@ export function HeroSection() {
           </a>
         </motion.div>
       </motion.div>
-
-      {/* Franja "Conócenos": el águila y la promesa de marca, dentro del primer foco */}
-      <div
-        style={{
-          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-          opacity: barVisible ? 1 : 0,
-          transform: barVisible ? 'translateY(0)' : 'translateY(8px)',
-          pointerEvents: barVisible ? 'auto' : 'none',
-          transition: 'opacity 0.25s ease, transform 0.25s ease',
-        }}
-        className="absolute inset-x-0 bottom-0 z-20 border-t border-border/60 bg-background/85 backdrop-blur-md"
-      >
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 py-3 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left lg:px-8">
-          <button
-            type="button"
-            id="nosotros"
-            onClick={() => setAboutOpen(true)}
-            aria-haspopup="dialog"
-            aria-label="Quiénes somos: misión, visión y valores de BOPE Security"
-            className="group flex min-w-0 shrink-0 items-center gap-3 rounded-md py-1 transition-colors"
-          >
-            <BopeLogo className="h-8 w-auto shrink-0" />
-            <span className="font-sans text-sm font-semibold tracking-[0.15em] text-foreground transition-colors group-hover:text-gold">
-              BOPE SECURITY
-            </span>
-            <ArrowRight className="h-3.5 w-3.5 shrink-0 text-gold transition-transform group-hover:translate-x-1" />
-          </button>
-          <p className="hidden truncate text-pretty font-sans text-xs italic leading-snug text-muted-foreground sm:block sm:text-sm">
-            “{QUOTE}”
-          </p>
-        </div>
-      </div>
 
       <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </section>
