@@ -215,7 +215,7 @@ html {
 }
 
 /* Nivel 4: las ondas celulares se marcan bloqueadas y el enlace satelital sube */
-.truck-wave[data-blocked='true'] { stroke: var(--amber); }
+.truck-wave[data-blocked='true'] { stroke: var(--amber); opacity: 0.55; animation: none; }
 .truck-block { opacity: 0; transition: opacity 0.5s ease; }
 .truck-block[data-on='true'] { opacity: 1; }
 .truck-block path { stroke: var(--amber); }
@@ -228,10 +228,23 @@ html {
 .truck-beam { stroke: #3a3d47; stroke-dasharray: 5 7; opacity: 0.3; transition: stroke 0.5s ease, opacity 0.5s ease; }
 .truck-beam[data-on='true'] { stroke: var(--gold); opacity: 1; animation: truck-flow 1s linear infinite reverse; }
 
+/* Simulación de robo: bloqueo de señal y buffer local mientras el equipo sigue midiendo */
+.truck-buffer { opacity: 0; transition: opacity 0.4s ease; }
+.truck-buffer[data-on='true'] { opacity: 1; }
+.truck-buffer circle:first-child { stroke: var(--amber); }
+.truck-buffer text { fill: var(--amber); }
+.truck-buffer-pulse { fill: none; stroke: var(--amber); opacity: 0; }
+.truck-buffer[data-on='true'] .truck-buffer-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: truck-pulse 1.4s ease-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .truck-beam[data-on='true'],
   .truck-link[data-on='true'],
   .truck-marker[data-fresh='true'] .truck-pulse,
+  .truck-buffer[data-on='true'] .truck-buffer-pulse,
   .truck-wire[data-on='true'],
   .truck-wave[data-on='true'] {
     animation: none;

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useInView, useReducedMotion } from 'framer-motion'
-import { ArrowRight, Radar, ShieldCheck } from 'lucide-react'
+import { ArrowRight, Radar, ShieldCheck, Siren, CircleCheck, TriangleAlert } from 'lucide-react'
 import { TruckArt } from '@/components/truck-art'
 import {
   BASE_INCLUDED,
@@ -32,6 +32,7 @@ export function SecurityTruck({
   const [level, setLevel] = useState<LevelId>(1)
   const [interacted, setInteracted] = useState(false)
   const [consultas, setConsultas] = useState(0) // consultas de posición por satélite (nivel 4)
+  const [robbery, setRobbery] = useState<'idle' | 'jamming' | 'recovered'>('idle')
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-20% 0px' })
   const reduce = useReducedMotion()
@@ -73,6 +74,7 @@ export function SecurityTruck({
 
   function choose(id: LevelId) {
     setInteracted(true)
+    setRobbery('idle')
     setLevel(id)
   }
 
@@ -82,6 +84,21 @@ export function SecurityTruck({
     choose(jumpTo.level)
     // Solo debe correr cuando cambia el "token" (cada clic), no en cada render.
   }, [jumpTo?.token])
+
+  // Simulación "Simular robo": corta la señal celular unos segundos y muestra
+  // cómo el equipo sigue avisando (satélite en el Nivel 4, buffer local en los demás).
+  function startRobbery() {
+    if (robbery !== 'idle') return
+    setRobbery('jamming')
+  }
+  useEffect(() => {
+    if (robbery === 'idle') return
+    const ms = robbery === 'jamming' ? (reduce ? 800 : 4200) : reduce ? 400 : 3000
+    const t = window.setTimeout(() => {
+      setRobbery((r) => (r === 'jamming' ? 'recovered' : 'idle'))
+    }, ms)
+    return () => window.clearTimeout(t)
+  }, [robbery, reduce])
 
   return (
     <div ref={ref} className="rounded-2xl border border-border bg-card p-4 sm:p-6">
@@ -124,7 +141,46 @@ export function SecurityTruck({
       </div>
 
       {/* Camión */}
-      <TruckArt level={level} fresh={fresh} pings={level === 4 && !reduce} className="mt-5 h-auto w-full" />
+      <TruckArt
+        level={level}
+        fresh={fresh}
+        pings={!reduce}
+        jammed={robbery === 'jamming'}
+        buffering={robbery === 'jamming' && level < 4}
+        className="mt-5 h-auto w-full"
+      />
+
+      {/* Simular robo: corta la señal y muestra cómo el equipo intenta avisar */}
+      <div className="mt-4 flex flex-col items-start gap-3 rounded-xl border border-border bg-background/60 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-3">
+          {robbery === 'jamming' ? (
+            <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0 animate-pulse text-amber" />
+          ) : robbery === 'recovered' ? (
+            <CircleCheck className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
+          ) : (
+            <Siren className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+          )}
+          <p className="text-pretty text-sm leading-relaxed text-foreground/90">
+            {robbery === 'jamming' &&
+              'Simulando un inhibidor: la señal celular se corta ahora mismo…'}
+            {robbery === 'recovered' &&
+              (level === 4
+                ? 'El equipo siguió reportando por satélite durante todo el bloqueo. No se perdió nada.'
+                : 'Señal recuperada: el equipo entregó el tramo que guardó mientras estuvo bloqueado.')}
+            {robbery === 'idle' &&
+              'Simula un inhibidor y mira cómo intenta avisar el equipo en este nivel.'}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={startRobbery}
+          disabled={robbery !== 'idle'}
+          className="inline-flex shrink-0 items-center gap-2 rounded-md border border-amber/50 bg-amber/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-amber transition-colors hover:bg-amber/20 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <Siren className="h-3.5 w-3.5" />
+          {robbery === 'idle' ? 'Simular robo (inhibidor)' : 'Simulando…'}
+        </button>
+      </div>
 
       {/* Detalle del nivel */}
       <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_1.1fr] lg:items-start">

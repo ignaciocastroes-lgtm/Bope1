@@ -1,9 +1,11 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { ArrowRight, ChevronDown, Navigation, Signal, Gauge, Radar } from 'lucide-react'
+import { AboutModal } from '@/components/about-modal'
+import { QUOTE } from '@/lib/company'
 import { BopeLogo } from '@/components/brand'
 import { MESSAGES, leadProps, openQuote } from '@/lib/contact'
 
@@ -16,6 +18,7 @@ const telemetry = [
 
 export function HeroSection() {
   const ref = useRef<HTMLDivElement>(null)
+  const [aboutOpen, setAboutOpen] = useState(false)
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end start'],
@@ -92,7 +95,7 @@ export function HeroSection() {
       {/* Foreground content */}
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-center px-4 sm:px-6 lg:px-8"
+        className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-center px-4 pb-20 sm:px-6 sm:pb-16 lg:px-8"
       >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -148,6 +151,32 @@ export function HeroSection() {
           </a>
         </motion.div>
       </motion.div>
+
+      {/* Franja "Conócenos": el águila y la promesa de marca, dentro del primer foco */}
+      <div
+        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+        className="absolute inset-x-0 bottom-0 z-20 border-t border-border/60 bg-background/85 backdrop-blur-md"
+      >
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 py-3 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left lg:px-8">
+          <div className="flex min-w-0 items-center gap-3">
+            <BopeLogo className="h-8 w-auto shrink-0" />
+            <p className="hidden truncate text-pretty font-sans text-xs italic leading-snug text-muted-foreground sm:block sm:text-sm">
+              “{QUOTE}”
+            </p>
+          </div>
+          <button
+            type="button"
+            id="nosotros"
+            onClick={() => setAboutOpen(true)}
+            className="group inline-flex shrink-0 items-center gap-2 rounded-md border border-gold/40 bg-gold/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gold transition-colors hover:bg-gold/20"
+          >
+            Conócenos
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+          </button>
+        </div>
+      </div>
+
+      <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </section>
   )
 }

@@ -25,6 +25,8 @@ export function TruckArt({
   level,
   fresh,
   pings = false,
+  jammed = false,
+  buffering = false,
   className,
 }: {
   level: LevelId
@@ -32,6 +34,10 @@ export function TruckArt({
   fresh: PointId[]
   /** Nivel 4: muestra la consulta de posición yendo y viniendo por satélite. */
   pings?: boolean
+  /** Simulación de robo: un inhibidor está cortando la señal celular ahora mismo. */
+  jammed?: boolean
+  /** Sin satélite (niveles 1-3) y bloqueado: el equipo sigue guardando el recorrido en local. */
+  buffering?: boolean
   className?: string
 }) {
   const on = new Set(activePoints(level))
@@ -129,14 +135,14 @@ export function TruckArt({
 
       {/* Antena en el techo + ondas */}
       <ellipse className="truck-dev" data-on={isOn(3)} cx={520} cy={66} rx={24} ry={9} strokeWidth={2} />
-      <path className="truck-wave truck-wave-1" data-on={isOn(3)} data-blocked={level >= 4} d="M 500 22 Q 520 8 540 22" fill="none" strokeWidth={2} strokeLinecap="round" />
-      <path className="truck-wave truck-wave-2" data-on={isOn(3)} data-blocked={level >= 4} d="M 490 12 Q 520 -8 550 12" fill="none" strokeWidth={2} strokeLinecap="round" />
+      <path className="truck-wave truck-wave-1" data-on={isOn(3) && !jammed} data-blocked={jammed} d="M 500 22 Q 520 8 540 22" fill="none" strokeWidth={2} strokeLinecap="round" />
+      <path className="truck-wave truck-wave-2" data-on={isOn(3) && !jammed} data-blocked={jammed} d="M 490 12 Q 520 -8 550 12" fill="none" strokeWidth={2} strokeLinecap="round" />
 
       {/* Sistema de auditoría (incluido desde el nivel 1) y sus enlaces */}
       <path
         className="truck-link"
-        data-on={level < 4}
-        data-blocked={level >= 4}
+        data-on={!jammed}
+        data-blocked={jammed}
         d="M 500 28 Q 330 -70 172 -36"
         fill="none"
         strokeWidth={2}
@@ -144,7 +150,7 @@ export function TruckArt({
       />
       <path
         className="truck-link"
-        data-on={level >= 4}
+        data-on={jammed && isOn(7)}
         d="M 726 -62 Q 460 -108 168 -48"
         fill="none"
         strokeWidth={2}
@@ -156,7 +162,7 @@ export function TruckArt({
       </g>
 
       {/* Insistir: consulta de posición hacia el equipo y respuesta hasta la auditoría */}
-      {pings && level >= 4 && (
+      {pings && jammed && isOn(7) && (
         <>
           <circle r={5} fill="none" stroke="var(--gold)" strokeWidth={2} opacity={0}>
             <animateMotion
@@ -190,7 +196,7 @@ export function TruckArt({
       )}
 
       {/* Bloqueo celular (nivel 4): la señal de la antena 3 queda tachada */}
-      <g className="truck-block" data-on={level >= 4}>
+      <g className="truck-block" data-on={jammed}>
         <path d="M 550 4 L 566 20 M 566 4 L 550 20" strokeWidth={3} strokeLinecap="round" fill="none" />
       </g>
 
@@ -209,6 +215,15 @@ export function TruckArt({
         <rect x={-30} y={-6} width={22} height={12} rx={1} />
         <rect x={8} y={-6} width={22} height={12} rx={1} />
         <rect x={-8} y={-9} width={16} height={18} rx={3} />
+      </g>
+
+      {/* Sin satélite y bloqueado: sigue guardando el recorrido en local */}
+      <g className="truck-buffer" data-on={buffering}>
+        <circle cx={PTS[0].x + 26} cy={PTS[0].y - 22} r={9} strokeWidth={2} fill="#15161b" />
+        <circle className="truck-buffer-pulse" cx={PTS[0].x + 26} cy={PTS[0].y - 22} r={9} />
+        <text x={PTS[0].x + 26} y={PTS[0].y - 22} textAnchor="middle" dominantBaseline="central" fontSize={10} fontWeight={700}>
+          !
+        </text>
       </g>
 
       {/* Carcasas de los equipos */}
