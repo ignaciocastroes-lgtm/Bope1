@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, ShieldCheck } from 'lucide-react'
-import { hasWhatsApp, sendLead } from '@/lib/contact'
+import { MapPin } from 'lucide-react'
+import { BUSINESS_ADDRESS, hasWhatsApp, sendLead } from '@/lib/contact'
 
 const services = [
   'Escolta de Carga',
@@ -37,6 +38,10 @@ export function ContactSection() {
           <p className="mx-auto mt-4 max-w-xl text-pretty leading-relaxed text-muted-foreground">
             Cuéntanos sobre tu operación y un especialista te contactará con un
             plan de seguridad a la medida.
+          </p>
+          <p className="mt-4 inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <MapPin className="h-4 w-4 text-gold" />
+            {BUSINESS_ADDRESS}
           </p>
         </div>
 

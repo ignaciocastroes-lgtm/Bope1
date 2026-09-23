@@ -13,6 +13,8 @@
 
 export const BUSINESS_EMAIL = 'Bope.Security@gmail.com'
 
+export const BUSINESS_ADDRESS = 'Moneda 812, of. 601, Santiago, Chile'
+
 /** Perfil de LinkedIn de BOPE Security, sin parámetros de seguimiento. */
 export const LINKEDIN_PROFILE_URL = 'https://www.linkedin.com/in/bope-security-53a42040b'
 
@@ -26,6 +28,15 @@ const digits = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '').replace(/\D/g, ''
 export const hasWhatsApp = digits.length >= 10
 
 export const OPEN_QUOTE_EVENT = 'open-quote-modal'
+
+export const FOCUS_LEVEL_EVENT = 'focus-truck-level'
+
+/** Lleva a la sección del camión y detiene la demostración en un nivel. */
+export function focusLevel(level: number) {
+  const el = document.getElementById('equipos')
+  el?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+  window.dispatchEvent(new CustomEvent<number>(FOCUS_LEVEL_EVENT, { detail: level }))
+}
 
 export type QuotePreset = {
   /** Equipos del catálogo ya elegidos. */

@@ -3,7 +3,7 @@
 import { useRef } from 'react'
 import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowRight, Navigation, Signal, Gauge, Radar } from 'lucide-react'
+import { ArrowRight, ChevronDown, Navigation, Signal, Gauge, Radar } from 'lucide-react'
 import { BopeLogo } from '@/components/brand'
 import { MESSAGES, leadProps, openQuote } from '@/lib/contact'
 
@@ -117,17 +117,10 @@ export function HeroSection() {
             desde una pantalla.
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a
-              {...leadProps(MESSAGES.escort)}
-              className="group inline-flex items-center justify-center gap-2 rounded-md bg-gold px-6 py-3.5 font-sans text-sm font-semibold uppercase tracking-widest text-primary-foreground transition-all hover:gold-glow"
-            >
-              Cotizar escolta de carga
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </a>
+          <div className="mt-8">
             <a
               {...leadProps(MESSAGES.pain)}
-              className="inline-flex items-center justify-center gap-2.5 rounded-md border border-amber/50 bg-amber/10 px-6 py-3.5 font-sans text-sm font-semibold uppercase tracking-widest text-amber backdrop-blur-md transition-colors hover:bg-amber/20"
+              className="group inline-flex items-center justify-center gap-2.5 rounded-md border border-amber/50 bg-amber/10 px-6 py-3.5 font-sans text-sm font-semibold uppercase tracking-widest text-amber backdrop-blur-md transition-colors hover:bg-amber/20"
             >
               <span className="h-2 w-2 animate-pulse rounded-full bg-amber" />
               Mi camión dejó de reportar
@@ -145,6 +138,14 @@ export function HeroSection() {
             </button>
             . Si hay un delito en curso, llama primero al 133 (Carabineros).
           </p>
+
+          <a
+            href="#servicios"
+            className="group mt-7 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground transition-colors hover:text-gold"
+          >
+            Ver escolta de carga y monitoreo
+            <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:translate-y-0.5" />
+          </a>
         </motion.div>
       </motion.div>
     </section>

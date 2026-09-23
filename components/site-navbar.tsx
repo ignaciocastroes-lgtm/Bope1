@@ -13,6 +13,8 @@ function openPromo() {
 
 const links = [
   { label: 'Inicio', href: '#inicio' },
+  { label: 'Cómo roban', href: '#amenazas' },
+  { label: 'Nosotros', href: '#nosotros' },
   { label: 'Servicios', href: '#servicios' },
   { label: 'Equipos GPS', href: '#equipos' },
   { label: 'Plataforma', href: '#tecnologia' },

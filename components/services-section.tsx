@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronDown, ShieldCheck, Radar, ScrollText } from 'lucide-react'
+import { ChevronDown, ShieldCheck, Radar, ScrollText, Search, Gem, Warehouse, ClipboardCheck, Lock } from 'lucide-react'
 import { MESSAGES, leadProps } from '@/lib/contact'
 
 type Cta = { label: string; message: string }
@@ -36,6 +36,51 @@ const services: {
       'Asistencia cuando un vehículo deja de reportar.',
     ],
     cta: { label: 'Hablar del monitoreo', message: MESSAGES.monitoring },
+  },
+  {
+    id: 'recuperacion',
+    icon: Search,
+    title: 'Recuperación de transporte',
+    desc: 'Ante un robo, coordinamos la localización del vehículo con la ubicación que entrega el GPS y activamos protocolo junto a las autoridades competentes.',
+    points: [
+      'Requiere que el vehículo cuente con nuestro rastreo activo.',
+      'La denuncia y la acción policial siempre corren por la autoridad competente; nosotros aportamos ubicación y antecedentes.',
+    ],
+    cta: { label: 'Consultar por este servicio', message: MESSAGES.monitoring },
+  },
+  {
+    id: 'valores',
+    icon: Gem,
+    title: 'Traslado de objetos de valor',
+    desc: 'Custodia de dinero, joyas y documentos confidenciales durante el traslado, con protocolo y seguimiento propios.',
+    points: ['A la medida de lo que trasladas: valor, ruta y frecuencia.'],
+    cta: { label: 'Cotizar traslado de valores', message: MESSAGES.escort },
+  },
+  {
+    id: 'custodia',
+    icon: Warehouse,
+    title: 'Custodia de bodegas y centros de almacenamiento',
+    desc: 'Resguardo del recinto con personal propio, dentro o fuera de las instalaciones, según lo que necesite tu operación.',
+    points: ['Se define en terreno: horario, puntos críticos y nivel de presencia.'],
+    cta: { label: 'Cotizar custodia', message: MESSAGES.monitoring },
+  },
+  {
+    id: 'asesoria',
+    icon: ClipboardCheck,
+    title: 'Asesoría, consultoría e investigación',
+    desc: 'Análisis de rutas, evaluación de riesgos y de vulnerabilidad, estudios de seguridad y apoyo para cierres perimetrales y CCTV.',
+    points: [
+      'Incluye, si lo necesitas, verificación con dron del punto de salida antes de despachar.',
+    ],
+    cta: { label: 'Agendar una asesoría', message: MESSAGES.expert },
+  },
+  {
+    id: 'ppi',
+    icon: Lock,
+    title: 'Protección integral (PPI)',
+    desc: 'Para operaciones de mayor riesgo, un esquema de protección más completo que el de escolta estándar. Es un servicio a la medida: el detalle se define en una conversación directa, no en el sitio.',
+    points: [],
+    cta: { label: 'Conversar en privado', message: MESSAGES.expert },
   },
   {
     id: 'evidencia',

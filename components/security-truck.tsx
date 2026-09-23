@@ -15,7 +15,7 @@ import {
   type LevelId,
   type PointId,
 } from '@/lib/security-levels'
-import { openQuote } from '@/lib/contact'
+import { FOCUS_LEVEL_EVENT, openQuote } from '@/lib/contact'
 
 const STEP_MS = 2400 // tiempo en cada nivel durante la demostración automática
 
@@ -70,6 +70,16 @@ export function SecurityTruck() {
     setInteracted(true)
     setLevel(id)
   }
+
+  // El modal de "cómo operan" puede pedir que el camión se detenga en un nivel.
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const level = (e as CustomEvent<number>).detail
+      if (level >= 1 && level <= 4) choose(level as LevelId)
+    }
+    window.addEventListener(FOCUS_LEVEL_EVENT, handler)
+    return () => window.removeEventListener(FOCUS_LEVEL_EVENT, handler)
+  }, [])
 
   return (
     <div ref={ref} className="rounded-2xl border border-border bg-card p-4 sm:p-6">

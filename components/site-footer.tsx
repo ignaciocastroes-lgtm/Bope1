@@ -1,6 +1,7 @@
 import { MessageCircle, Mail } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 import { BopeLogo, LinkedInIcon } from '@/components/brand'
-import { BUSINESS_EMAIL, LINKEDIN_PROFILE_URL, MESSAGES, hasWhatsApp, leadProps } from '@/lib/contact'
+import { BUSINESS_ADDRESS, BUSINESS_EMAIL, LINKEDIN_PROFILE_URL, MESSAGES, hasWhatsApp, leadProps } from '@/lib/contact'
 
 export function SiteFooter() {
   return (
@@ -54,6 +55,10 @@ export function SiteFooter() {
                 <Mail className="h-4 w-4 text-gold" />
                 {BUSINESS_EMAIL}
               </a>
+              <p className="mt-3 flex items-start gap-2 text-muted-foreground">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+                <span>{BUSINESS_ADDRESS}</span>
+              </p>
               <div className="mt-2 flex gap-3">
                 <a
                   href={LINKEDIN_PROFILE_URL}
