@@ -1,20 +1,24 @@
 'use client'
 
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, ArrowRight } from 'lucide-react'
+import { X, ArrowRight, Users } from 'lucide-react'
 import { THREATS } from '@/lib/threats'
-import { focusLevel } from '@/lib/contact'
+import { MESSAGES, leadProps } from '@/lib/contact'
+import { SecurityTruck } from '@/components/security-truck'
+import type { LevelId } from '@/lib/security-levels'
 
 /**
- * Modal independiente: explica, a nivel de patrón (sin pasos ni detalles
- * técnicos), qué hacen quienes roban carga, y qué nivel del camión responde
- * a cada táctica. "Ver en el camión" cierra el modal, baja a la sección de
- * equipos y detiene la demostración en el nivel correspondiente.
+ * Modal único "Plan de acción": explica, a nivel de patrón (sin pasos ni
+ * detalles técnicos), qué hacen quienes roban carga, muestra en el mismo
+ * camión qué nivel responde a cada táctica, y cierra con el argumento de
+ * fondo: la tecnología sola no reemplaza a un equipo coordinado.
  */
-export function ThreatModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function ActionPlanModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const dialogRef = useRef<HTMLDivElement>(null)
+  const truckRef = useRef<HTMLDivElement>(null)
   const returnFocusRef = useRef<HTMLElement | null>(null)
+  const [jumpTo, setJumpTo] = useState<{ level: LevelId; token: number } | null>(null)
 
   const close = useCallback(() => {
     onClose()
@@ -60,10 +64,9 @@ export function ThreatModal({ open, onClose }: { open: boolean; onClose: () => v
     }
   }, [open, close])
 
-  function goToLevel(level: number) {
-    close()
-    // Espera a que el modal cierre y la sección exista antes de enfocar el nivel.
-    window.setTimeout(() => focusLevel(level), 50)
+  function goToLevel(level: LevelId) {
+    setJumpTo({ level, token: Date.now() })
+    truckRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
@@ -81,8 +84,8 @@ export function ThreatModal({ open, onClose }: { open: boolean; onClose: () => v
             ref={dialogRef}
             role="dialog"
             aria-modal="true"
-            aria-labelledby="threat-title"
-            className="relative my-auto w-full max-w-2xl rounded-2xl border border-amber/30 bg-[#121216] shadow-2xl"
+            aria-labelledby="plan-title"
+            className="relative my-auto w-full max-w-3xl rounded-2xl border border-amber/30 bg-[#121216] shadow-2xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
@@ -103,14 +106,14 @@ export function ThreatModal({ open, onClose }: { open: boolean; onClose: () => v
                 Cómo operan quienes roban carga
               </p>
               <h2
-                id="threat-title"
+                id="plan-title"
                 className="mt-2 text-balance font-sans text-2xl font-bold uppercase leading-tight tracking-tight text-foreground"
               >
-                Y lo que hace cada nivel al respecto
+                Nuestro plan de acción
               </h2>
               <p className="mt-3 text-pretty text-sm leading-relaxed text-muted-foreground">
                 Sin manual ni pasos: solo lo que necesitas entender para elegir bien tu nivel de
-                protección.
+                protección, y por qué la tecnología es solo una parte del plan.
               </p>
 
               <ul className="mt-6 space-y-4">
@@ -139,6 +142,36 @@ export function ThreatModal({ open, onClose }: { open: boolean; onClose: () => v
                   </li>
                 ))}
               </ul>
+
+              {/* El camión: la misma demostración, ahora dentro del plan de acción */}
+              <div ref={truckRef} className="mt-8 scroll-mt-4">
+                <h3 className="font-sans text-lg font-bold uppercase tracking-tight text-foreground">
+                  La tecnología, por niveles
+                </h3>
+                <div className="mt-4">
+                  <SecurityTruck jumpTo={jumpTo} />
+                </div>
+              </div>
+
+              {/* El argumento de fondo */}
+              <div className="mt-8 rounded-xl border border-gold/40 bg-gold/5 p-5 sm:p-6">
+                <p className="flex items-center gap-2 font-sans text-base font-semibold text-foreground">
+                  <Users className="h-5 w-5 text-gold" />
+                  Lo más sofisticado no reemplaza a un equipo
+                </p>
+                <p className="mt-2 text-pretty text-sm leading-relaxed text-muted-foreground">
+                  Ningún nivel de tecnología reacciona solo: alguien tiene que ver la alerta,
+                  decidir y moverse. Por eso el sistema se apoya en un grupo de coordinación para
+                  el transporte de un lado a otro, no solo en sensores y un mapa.
+                </p>
+                <a
+                  {...leadProps(MESSAGES.escort)}
+                  className="mt-4 inline-flex items-center justify-center gap-2 rounded-md bg-gold px-5 py-2.5 text-xs font-semibold uppercase tracking-widest text-primary-foreground transition-all hover:gold-glow"
+                >
+                  Hablar de escolta y coordinación
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
 
               <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
                 No usamos inhibidores ni ninguna de estas tácticas: describimos el riesgo para que

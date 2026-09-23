@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { AlertTriangle, ArrowRight, Radio, ShieldOff, Fingerprint } from 'lucide-react'
-import { ThreatModal } from '@/components/threat-modal'
+import { ActionPlanModal } from '@/components/threat-modal'
 
 const teaser = [
   { icon: Fingerprint, text: 'Buscan el rastreador y lo anulan' },
@@ -52,7 +52,7 @@ export function ThreatSection() {
         </button>
       </div>
 
-      <ThreatModal open={open} onClose={() => setOpen(false)} />
+      <ActionPlanModal open={open} onClose={() => setOpen(false)} />
     </section>
   )
 }

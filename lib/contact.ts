@@ -29,15 +29,6 @@ export const hasWhatsApp = digits.length >= 10
 
 export const OPEN_QUOTE_EVENT = 'open-quote-modal'
 
-export const FOCUS_LEVEL_EVENT = 'focus-truck-level'
-
-/** Lleva a la sección del camión y detiene la demostración en un nivel. */
-export function focusLevel(level: number) {
-  const el = document.getElementById('equipos')
-  el?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
-  window.dispatchEvent(new CustomEvent<number>(FOCUS_LEVEL_EVENT, { detail: level }))
-}
-
 export type QuotePreset = {
   /** Equipos del catálogo ya elegidos. */
   productIds?: string[]

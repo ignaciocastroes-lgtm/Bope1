@@ -15,7 +15,7 @@ import {
   type LevelId,
   type PointId,
 } from '@/lib/security-levels'
-import { FOCUS_LEVEL_EVENT, openQuote } from '@/lib/contact'
+import { openQuote } from '@/lib/contact'
 
 const STEP_MS = 2400 // tiempo en cada nivel durante la demostración automática
 
@@ -23,7 +23,12 @@ const STEP_MS = 2400 // tiempo en cada nivel durante la demostración automátic
  * Camión con los niveles de protección. Al entrar en pantalla recorre solo los
  * niveles 1 → 2 → 3 → 4 (una vez); si la persona toca un nivel, se detiene y manda ella.
  */
-export function SecurityTruck() {
+export function SecurityTruck({
+  jumpTo,
+}: {
+  /** Cambia (nuevo token) para forzar el camión a un nivel desde fuera, ej. un botón del modal. */
+  jumpTo?: { level: LevelId; token: number } | null
+}) {
   const [level, setLevel] = useState<LevelId>(1)
   const [interacted, setInteracted] = useState(false)
   const [consultas, setConsultas] = useState(0) // consultas de posición por satélite (nivel 4)
@@ -71,15 +76,12 @@ export function SecurityTruck() {
     setLevel(id)
   }
 
-  // El modal de "cómo operan" puede pedir que el camión se detenga en un nivel.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const handler = (e: Event) => {
-      const level = (e as CustomEvent<number>).detail
-      if (level >= 1 && level <= 4) choose(level as LevelId)
-    }
-    window.addEventListener(FOCUS_LEVEL_EVENT, handler)
-    return () => window.removeEventListener(FOCUS_LEVEL_EVENT, handler)
-  }, [])
+    if (!jumpTo) return
+    choose(jumpTo.level)
+    // Solo debe correr cuando cambia el "token" (cada clic), no en cada render.
+  }, [jumpTo?.token])
 
   return (
     <div ref={ref} className="rounded-2xl border border-border bg-card p-4 sm:p-6">

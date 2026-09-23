@@ -2,7 +2,7 @@ import { SiteNavbar } from '@/components/site-navbar'
 import { HeroSection } from '@/components/hero-section'
 import { StorySection } from '@/components/story-section'
 import { ThreatSection } from '@/components/threat-section'
-import { AboutSection } from '@/components/about-section'
+import { AboutTeaser } from '@/components/about-teaser'
 import { ServicesSection } from '@/components/services-section'
 import { EquipmentSection } from '@/components/equipment-section'
 import { TechTeaser } from '@/components/tech-teaser'
@@ -23,7 +23,7 @@ export default function Page() {
       <HeroSection />
       <StorySection />
       <ThreatSection />
-      <AboutSection />
+      <AboutTeaser />
       <ServicesSection />
       <EquipmentSection />
       <TechTeaser />
