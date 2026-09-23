@@ -13,6 +13,17 @@ const services = [
   'Asesoría de Riesgos',
 ]
 
+const coverage = [
+  'San Antonio',
+  'Melipilla',
+  'Talagante',
+  'Maipú',
+  'Santiago Centro',
+  'Ruta 78',
+  'Ruta 68',
+  'Autopista del Sol',
+]
+
 const fields = [
   { id: 'empresa', label: 'Empresa / Transportista', type: 'text', ph: 'Transportes Ejemplo Ltda.' },
   { id: 'telefono', label: 'Teléfono de Contacto', type: 'tel', ph: '+56 9 0000 0000' },
@@ -43,6 +54,20 @@ export function ContactSection() {
             <MapPin className="h-4 w-4 text-gold" />
             {BUSINESS_ADDRESS}
           </p>
+        </div>
+
+        <div id="cobertura" className="mb-12 scroll-mt-16 text-center">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">Cobertura</p>
+          <div className="mt-4 flex flex-wrap justify-center gap-2.5">
+            {coverage.map((c) => (
+              <span
+                key={c}
+                className="rounded-full border border-border bg-card px-3.5 py-1.5 text-xs text-muted-foreground transition-colors hover:border-gold/40 hover:text-gold"
+              >
+                {c}
+              </span>
+            ))}
+          </div>
         </div>
 
         <motion.form

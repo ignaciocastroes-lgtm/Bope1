@@ -174,21 +174,23 @@ export function HeroSection() {
         className="absolute inset-x-0 bottom-0 z-20 border-t border-border/60 bg-background/85 backdrop-blur-md"
       >
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 py-3 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left lg:px-8">
-          <div className="flex min-w-0 items-center gap-3">
-            <BopeLogo className="h-8 w-auto shrink-0" />
-            <p className="hidden truncate text-pretty font-sans text-xs italic leading-snug text-muted-foreground sm:block sm:text-sm">
-              “{QUOTE}”
-            </p>
-          </div>
           <button
             type="button"
             id="nosotros"
             onClick={() => setAboutOpen(true)}
-            className="group inline-flex shrink-0 items-center gap-2 rounded-md border border-gold/40 bg-gold/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gold transition-colors hover:bg-gold/20"
+            aria-haspopup="dialog"
+            aria-label="Quiénes somos: misión, visión y valores de BOPE Security"
+            className="group flex min-w-0 shrink-0 items-center gap-3 rounded-md py-1 transition-colors"
           >
-            Conócenos
-            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            <BopeLogo className="h-8 w-auto shrink-0" />
+            <span className="font-sans text-sm font-semibold tracking-[0.15em] text-foreground transition-colors group-hover:text-gold">
+              BOPE SECURITY
+            </span>
+            <ArrowRight className="h-3.5 w-3.5 shrink-0 text-gold transition-transform group-hover:translate-x-1" />
           </button>
+          <p className="hidden truncate text-pretty font-sans text-xs italic leading-snug text-muted-foreground sm:block sm:text-sm">
+            “{QUOTE}”
+          </p>
         </div>
       </div>
 

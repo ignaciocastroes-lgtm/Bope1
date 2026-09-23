@@ -1,25 +1,38 @@
-import { MessageCircle, Mail } from 'lucide-react'
+'use client'
+
+import { useState } from 'react'
+import { MessageCircle, Mail, ArrowRight } from 'lucide-react'
 import { MapPin } from 'lucide-react'
 import { BopeLogo, LinkedInIcon } from '@/components/brand'
+import { AboutModal } from '@/components/about-modal'
 import { BUSINESS_ADDRESS, BUSINESS_EMAIL, LINKEDIN_PROFILE_URL, MESSAGES, hasWhatsApp, leadProps } from '@/lib/contact'
 
 export function SiteFooter() {
+  const [aboutOpen, setAboutOpen] = useState(false)
+
   return (
     <footer className="border-t border-border bg-card/40">
       <div className="mx-auto max-w-7xl px-4 pb-28 pt-14 sm:px-6 sm:pb-14 lg:px-8">
         <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
           <div>
-            <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setAboutOpen(true)}
+              aria-haspopup="dialog"
+              aria-label="Quiénes somos: misión, visión y valores de BOPE Security"
+              className="group flex items-center gap-3 rounded-md text-left transition-colors"
+            >
               <BopeLogo className="h-14 w-auto" />
               <div className="leading-none">
-                <p className="font-sans text-base font-semibold tracking-[0.18em] text-foreground">
+                <p className="flex items-center gap-1.5 font-sans text-base font-semibold tracking-[0.18em] text-foreground transition-colors group-hover:text-gold">
                   BOPE SECURITY
+                  <ArrowRight className="h-3.5 w-3.5 text-gold transition-transform group-hover:translate-x-1" />
                 </p>
                 <p className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
-                  Asistencia y Monitoreo GPS
+                  Nuestro Quiénes somos · visión y misión
                 </p>
               </div>
-            </div>
+            </button>
             <p className="mt-5 max-w-sm text-pretty text-sm leading-relaxed text-muted-foreground">
               Servicios privados de asistencia logística y seguridad en ruta:
               escolta preventiva, monitoreo GPS y equipos con instalación
@@ -98,6 +111,7 @@ export function SiteFooter() {
           </p>
         </div>
       </div>
+      <AboutModal open={aboutOpen} onClose={() => setAboutOpen(false)} />
     </footer>
   )
 }

@@ -1,5 +1,12 @@
-import { ArrowRight } from 'lucide-react'
+'use client'
+
+import { ArrowRight, Radio } from 'lucide-react'
 import { MESSAGES, leadProps } from '@/lib/contact'
+import { OPEN_PROMO_EVENT } from '@/components/promo-modal'
+
+function openPromo() {
+  window.dispatchEvent(new Event(OPEN_PROMO_EVENT))
+}
 
 const beats = [
   {
@@ -72,6 +79,35 @@ export function StorySection() {
               </li>
             ))}
           </ol>
+        </div>
+
+        {/* Noticia: la plataforma que viene, contada como un anuncio corto, no como otra sección */}
+        <div id="tecnologia" className="mt-16 scroll-mt-16 border-t border-border pt-8">
+          <div className="flex flex-col items-start gap-4 rounded-xl border border-gold/30 bg-gold/5 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gold/40 bg-gold/10 text-gold">
+                <Radio className="h-4 w-4" />
+              </span>
+              <div>
+                <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-gold">
+                  Próximamente
+                </p>
+                <p className="mt-1 text-pretty text-sm leading-relaxed text-foreground/90">
+                  <span className="font-semibold">BOPE Fleet Ops</span>, el panel de control en
+                  vivo para operadores de flota, está en desarrollo. Hoy lo probamos con equipos
+                  propios.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={openPromo}
+              className="group inline-flex shrink-0 items-center gap-2 rounded-md border border-gold/40 bg-gold/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gold transition-colors hover:bg-gold/20"
+            >
+              Ver qué viene
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            </button>
+          </div>
         </div>
       </div>
     </section>
