@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { ArrowRight, ChevronDown, Navigation, Signal, Gauge, Radar } from 'lucide-react'
@@ -19,10 +19,20 @@ const telemetry = [
 export function HeroSection() {
   const ref = useRef<HTMLDivElement>(null)
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [barVisible, setBarVisible] = useState(true)
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end start'],
   })
+
+  // La franja "Conócenos" vive dentro del hero; se retira justo antes de que
+  // aparezca el botón flotante de contacto, para que no se encimen en pantallas anchas.
+  useEffect(() => {
+    const onScroll = () => setBarVisible(window.scrollY <= window.innerHeight * 0.55)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '35%'])
   const bgScale = useTransform(scrollYProgress, [0, 1], [1.1, 1.3])
@@ -154,7 +164,13 @@ export function HeroSection() {
 
       {/* Franja "Conócenos": el águila y la promesa de marca, dentro del primer foco */}
       <div
-        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+        style={{
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+          opacity: barVisible ? 1 : 0,
+          transform: barVisible ? 'translateY(0)' : 'translateY(8px)',
+          pointerEvents: barVisible ? 'auto' : 'none',
+          transition: 'opacity 0.25s ease, transform 0.25s ease',
+        }}
         className="absolute inset-x-0 bottom-0 z-20 border-t border-border/60 bg-background/85 backdrop-blur-md"
       >
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-4 py-3 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left lg:px-8">

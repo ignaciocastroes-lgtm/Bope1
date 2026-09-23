@@ -89,6 +89,50 @@ export function ThreatSection() {
           ))}
         </ul>
 
+        {/* Efecto que guía la mirada de las tarjetas hacia el botón */}
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 300 56"
+          preserveAspectRatio="none"
+          className="mx-auto -mb-2 mt-2 h-12 w-full max-w-lg text-gold"
+        >
+          {[50, 150, 250].map((x, i) => (
+            <motion.path
+              key={x}
+              d={`M ${x} 0 Q ${x} 30 150 30 T 150 56`}
+              fill="none"
+              stroke="currentColor"
+              strokeOpacity={0.35}
+              strokeWidth={1.5}
+              strokeDasharray="3 5"
+              initial={reduce ? false : { pathLength: 0, opacity: 0 }}
+              whileInView={reduce ? undefined : { pathLength: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.15 + i * 0.08 }}
+            />
+          ))}
+          {!reduce &&
+            [50, 150, 250].map((x, i) => (
+              <circle key={`dot-${x}`} r={2.6} fill="var(--gold)">
+                <animateMotion
+                  dur="2.4s"
+                  begin={`${i * 0.5}s`}
+                  repeatCount="indefinite"
+                  path={`M ${x} 0 Q ${x} 30 150 30 T 150 56`}
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0;1;1;0"
+                  keyTimes="0;0.1;0.8;1"
+                  dur="2.4s"
+                  begin={`${i * 0.5}s`}
+                  repeatCount="indefinite"
+                />
+              </circle>
+            ))}
+          <circle cx={150} cy={54} r={3} fill="var(--gold)" opacity={0.6} />
+        </svg>
+
         <motion.button
           variants={reduce ? undefined : rise}
           type="button"

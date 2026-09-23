@@ -195,9 +195,32 @@ export function TruckArt({
         </>
       )}
 
-      {/* Bloqueo celular (nivel 4): la señal de la antena 3 queda tachada */}
+      {/* Bloqueo celular: la señal de la antena 3 queda tachada mientras dura la simulación */}
       <g className="truck-block" data-on={jammed}>
         <path d="M 550 4 L 566 20 M 566 4 L 550 20" strokeWidth={3} strokeLinecap="round" fill="none" />
+      </g>
+
+      {/* El inhibidor/jammer: el artefacto del atacante, en verde para diferenciarlo
+          del equipo propio (dorado). Solo aparece durante la simulación de robo. */}
+      {/* El "transform" de posición va en un <g> aparte: la animación CSS de
+          aparición usa su propio "transform" (scale) y pisaría un translate
+          puesto en el mismo elemento. */}
+      <g transform="translate(636 -18)">
+        <g className="truck-jammer" data-on={jammed}>
+          <path
+            className="truck-jammer-beam"
+            d="M -6 18 Q -46 26 -96 46"
+            fill="none"
+            strokeWidth={2}
+            strokeLinecap="round"
+          />
+          <path d="M -8 -8 L -13 -24 M 0 -10 L 0 -27 M 8 -8 L 13 -24" strokeWidth={2} strokeLinecap="round" fill="none" />
+          <rect x={-15} y={-8} width={30} height={20} rx={4} strokeWidth={2} />
+          <rect x={-9} y={-3} width={18} height={4} rx={1} strokeWidth={1} />
+          <text x={0} y={32} textAnchor="middle" fontSize={10} fontWeight={700} letterSpacing={0.5}>
+            JAMMER
+          </text>
+        </g>
       </g>
 
       {/* Antena satelital (7), satélite y enlace */}
