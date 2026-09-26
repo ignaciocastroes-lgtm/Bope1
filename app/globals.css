@@ -167,6 +167,12 @@ html {
 .truck-marker .truck-dot { fill: #121214; stroke: #52525b; transition: fill 0.5s ease, stroke 0.5s ease; }
 .truck-marker .truck-num { fill: #71717a; transition: fill 0.5s ease; }
 .truck-marker .truck-hid { stroke: var(--gold-muted); opacity: 0; transition: opacity 0.5s ease; }
+.truck-marker[data-fresh='true'] .truck-hid {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: truck-hid-pop 0.5s ease-out;
+}
+@keyframes truck-hid-pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 .truck-marker .truck-pulse { fill: none; stroke: var(--gold); opacity: 0; }
 .truck-marker[data-on='true'] .truck-dot { fill: var(--gold); stroke: var(--gold); }
 .truck-marker[data-on='true'] .truck-num { fill: #09090b; }
@@ -181,9 +187,15 @@ html {
   to { transform: scale(2.6); opacity: 0; }
 }
 
-.truck-wire { stroke: #3a3d47; stroke-dasharray: 6 8; opacity: 0.5; transition: stroke 0.5s ease, opacity 0.5s ease; }
-.truck-wire[data-on='true'] { stroke: var(--gold); opacity: 1; animation: truck-flow 1.2s linear infinite; }
+.truck-wire {
+  stroke: #3a3d47; stroke-dasharray: 6 8; opacity: 0.5;
+  clip-path: inset(0 100% 0 0);
+  transition: stroke 0.5s ease, opacity 0.5s ease;
+}
+.truck-wire[data-on='true'] { stroke: var(--gold); opacity: 1; clip-path: inset(0 0 0 0); animation: truck-flow 1.2s linear infinite; }
+.truck-wire[data-fresh='true'] { animation: truck-wire-reveal 0.9s ease-out, truck-flow 1.2s linear infinite; }
 @keyframes truck-flow { to { stroke-dashoffset: -28; } }
+@keyframes truck-wire-reveal { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 
 .truck-wave { stroke: var(--gold); opacity: 0; }
 .truck-wave[data-on='true'] { animation: truck-wave 2.2s ease-in-out infinite; }
@@ -196,9 +208,32 @@ html {
 /* Auditoría (siempre activa) y enlaces hacia ella */
 .truck-audit path:first-child { fill: rgba(212, 175, 55, 0.14); stroke: var(--gold); }
 .truck-audit path:last-child { stroke: var(--gold); }
+.truck-audit[data-fresh='true'] {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: truck-shield-tremble 0.22s ease-in-out 0.8s 2;
+}
+@keyframes truck-shield-tremble { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } }
 .truck-link { stroke: #3a3d47; stroke-dasharray: 5 7; opacity: 0.4; transition: stroke 0.5s ease, opacity 0.5s ease; }
 .truck-link[data-on='true'] { stroke: var(--gold); opacity: 1; animation: truck-flow 1.2s linear infinite; }
 .truck-link[data-blocked='true'] { stroke: var(--destructive); opacity: 0.45; }
+.truck-link-audit { clip-path: inset(0 100% 0 0); }
+.truck-link-audit[data-on='true'] { clip-path: inset(0 0 0 0); }
+.truck-link-audit[data-fresh='true'] { animation: truck-wire-reveal 0.9s ease-out, truck-flow 1.2s linear infinite; }
+
+/* Nivel 3: "clic, detectado" -- el sensor de puerta parpadea justo cuando
+   la puerta termina de cerrarse (1s, lo que dura esa transición). */
+.truck-marker-door[data-fresh='true'] .truck-dot {
+  animation: truck-blink 0.2s ease-in-out 1s 2;
+}
+@keyframes truck-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.15; } }
+
+/* El GPS de carga no se enciende de golpe: espera a que la puerta cierre */
+.truck-dev-cargo[data-fresh='true'] { transition-delay: 1s; }
+.truck-marker-cargo[data-fresh='true'] .truck-dot,
+.truck-marker-cargo[data-fresh='true'] .truck-num {
+  transition-delay: 1s;
+}
 
 /* Puerta trasera: abierta (niveles 1-2) y cerrada (nivel 3 en adelante) */
 .truck-door {
@@ -222,11 +257,22 @@ html {
 
 .truck-mast { stroke: #3a3d47; transition: stroke 0.5s ease; }
 .truck-mast[data-on='true'] { stroke: var(--gold); }
+.truck-antenna-deploy { transform-box: fill-box; transform-origin: center; }
+.truck-antenna-deploy[data-fresh='true'] { animation: truck-antenna-deploy 0.6s ease-out; }
+@keyframes truck-antenna-deploy {
+  from { transform: rotate(-24deg) scale(0.6); opacity: 0.3; }
+  to { transform: rotate(0deg) scale(1); opacity: 1; }
+}
 
 .truck-sat { fill: #15161b; stroke: #3a3d47; stroke-width: 2; opacity: 0.35; transition: opacity 0.6s ease, stroke 0.6s ease; }
 .truck-sat[data-on='true'] { opacity: 1; stroke: var(--gold); }
-.truck-beam { stroke: #3a3d47; stroke-dasharray: 5 7; opacity: 0.3; transition: stroke 0.5s ease, opacity 0.5s ease; }
-.truck-beam[data-on='true'] { stroke: var(--gold); opacity: 1; animation: truck-flow 1s linear infinite reverse; }
+.truck-sat[data-fresh='true'] { animation: truck-sat-blink 0.3s ease-in-out 0.5s 1; }
+@keyframes truck-sat-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.truck-beam { stroke: #3a3d47; stroke-dasharray: 5 7; opacity: 0.3; clip-path: inset(0 0 100% 0); transition: stroke 0.5s ease, opacity 0.5s ease; }
+.truck-beam[data-on='true'] { stroke: var(--gold); opacity: 1; clip-path: inset(0 0 0% 0); animation: truck-flow 1s linear infinite reverse; }
+.truck-beam[data-fresh='true'] { animation: truck-beam-reveal 0.6s ease-out, truck-flow 1s linear infinite reverse; }
+@keyframes truck-beam-reveal { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0% 0); } }
 
 /* Campo del inhibidor: rojo = peligro/bloqueo (lo que provoca el ataque). El
    dorado sigue siendo "lo nuestro" y el verde queda solo para el aparato del
@@ -244,12 +290,12 @@ html {
 /* Auto escolta: no depende del nivel, depende del interruptor. Discreto
    a propósito (halo punteado, sin marca a la vista) — está para ver y
    avisar, no para intimidar. */
-.truck-escort { opacity: 0; transition: opacity 0.5s ease; }
-.truck-escort[data-on='true'] { opacity: 1; }
-.truck-escort-halo { stroke: var(--gold-muted); opacity: 0.5; }
-.truck-escort-body { stroke: var(--gold); fill: #15161b; }
-.truck-escort-label { fill: var(--gold-muted); letter-spacing: 0.05em; }
-.truck-escort-caption { fill: var(--muted-foreground, #8a8a93); }
+.truck-escort { opacity: 0; transform: translateX(34px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.truck-escort[data-on='true'] { opacity: 1; transform: translateX(0); }
+.truck-escort-label { opacity: 0; fill: var(--gold-muted); letter-spacing: 0.05em; transition: opacity 0.5s ease; }
+.truck-escort-label[data-on='true'] { opacity: 1; }
+.truck-escort-caption { opacity: 0; fill: var(--muted-foreground, #8a8a93); transition: opacity 0.5s ease; }
+.truck-escort-caption[data-on='true'] { opacity: 1; }
 
 .truck-escort-ghost { opacity: 0; transition: opacity 0.5s ease; }
 .truck-escort-ghost[data-on='true'] { opacity: 0.55; }
@@ -302,14 +348,28 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .truck-escort-alert[data-on='true'],
   .truck-beam[data-on='true'],
+  .truck-beam[data-fresh='true'],
   .truck-link[data-on='true'],
+  .truck-link-audit[data-fresh='true'],
   .truck-marker[data-fresh='true'] .truck-pulse,
+  .truck-marker[data-fresh='true'] .truck-hid,
+  .truck-marker-door[data-fresh='true'] .truck-dot,
+  .truck-audit[data-fresh='true'],
+  .truck-antenna-deploy[data-fresh='true'],
+  .truck-sat[data-fresh='true'],
   .truck-buffer[data-on='true'] .truck-buffer-pulse,
   .truck-jammer[data-on='true'],
   .truck-jammer[data-on='true'] .truck-jammer-beam,
   .truck-wire[data-on='true'],
+  .truck-wire[data-fresh='true'],
   .truck-wave[data-on='true'] {
     animation: none;
   }
   .truck-wave[data-on='true'] { opacity: 0.7; }
+  .truck-escort { transition: opacity 0.3s ease; }
+  .truck-dev-cargo[data-fresh='true'],
+  .truck-marker-cargo[data-fresh='true'] .truck-dot,
+  .truck-marker-cargo[data-fresh='true'] .truck-num {
+    transition-delay: 0s;
+  }
 }

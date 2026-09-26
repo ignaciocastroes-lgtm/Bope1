@@ -1,6 +1,12 @@
 /**
  * Niveles de protección del vehículo (usados por la animación del camión).
  *
+ * El auto escolta (afuera de este archivo, es una categoría aparte) es la
+ * base que siempre está y la que de verdad reporta; no depende de estos
+ * niveles ni interviene contra quien roba. Estos 4 niveles son la
+ * tecnología que SÍ se despliega contra eso, y se dosifican según el valor
+ * de la carga: no es "más de lo mismo" nivel a nivel, es más cobertura.
+ *
  * Los puntos numerados replican la instalación de referencia. Los niveles son
  * acumulativos: cada uno incluye los anteriores. El nivel 4 (satelital) se
  * cotiza siempre a medida, porque depende de la ruta, el equipo y el plan.

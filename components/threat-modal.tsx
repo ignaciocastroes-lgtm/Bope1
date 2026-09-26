@@ -9,10 +9,17 @@ import { SecurityTruck } from '@/components/security-truck'
 import type { LevelId } from '@/lib/security-levels'
 
 /**
- * Modal único "Plan de acción": explica, a nivel de patrón (sin pasos ni
- * detalles técnicos), qué hacen quienes roban carga, muestra en el mismo
- * camión qué nivel responde a cada táctica, y cierra con el argumento de
- * fondo: la tecnología sola no reemplaza a un equipo coordinado.
+ * Modal único "Plan de acción". El orden encierra la lógica real del
+ * negocio, no solo una jerarquía visual:
+ *
+ * 1. El auto escolta abre porque es la base que SIEMPRE está y la que de
+ *    verdad reporta -- esté o no la carga asegurada con tecnología.
+ * 2. El auto no interviene contra quien roba (solo observa y avisa). Por
+ *    eso la tecnología (los 4 niveles) es lo que sí se despliega contra
+ *    eso, y se dosifica según el valor de la carga: más nivel, más
+ *    protección, no "más de lo mismo".
+ * 3. Las tácticas de robo cierran como contexto: por qué hace falta todo
+ *    lo anterior, no como la puerta de entrada al modal.
  */
 export function ActionPlanModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const dialogRef = useRef<HTMLDivElement>(null)
@@ -104,17 +111,57 @@ export function ActionPlanModal({ open, onClose }: { open: boolean; onClose: () 
 
             <div className="max-h-[85vh] overflow-y-auto p-6 sm:p-8">
               <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-amber">
-                Cómo operan quienes roban carga
+                Presencia real, no solo tecnología
               </p>
               <h2
                 id="plan-title"
                 className="mt-2 text-balance font-sans text-2xl font-bold uppercase leading-tight tracking-tight text-foreground"
               >
-                Nuestro plan de acción
+                Un auto escolta te sigue, siempre
               </h2>
               <p className="mt-3 text-pretty text-sm leading-relaxed text-muted-foreground">
-                Sin manual ni pasos: toca cada táctica para ver qué hacemos, o ve directo al
-                camión y al argumento de fondo, más abajo.
+                Sigue a distancia. No interviene: observa y avisa directo a 133 y al dueño.
+                Actívalo o apágalo en el camión de abajo para ver la diferencia.
+              </p>
+              <p className="mt-2 text-pretty text-sm leading-relaxed text-muted-foreground">
+                Contra quien roba, el auto no puede intervenir — para eso está la tecnología de
+                abajo, que se agrega según el valor de tu carga.
+              </p>
+
+              {/* El camión: niveles de tecnología + auto escolta, todo en una sola escena */}
+              <div ref={truckRef} className="mt-6 scroll-mt-4">
+                <SecurityTruck jumpTo={jumpTo} />
+              </div>
+
+              {/* El argumento de fondo */}
+              <div className="mt-8 rounded-xl border border-gold/40 bg-gold/5 p-5 sm:p-6">
+                <p className="flex items-center gap-2 font-sans text-base font-semibold text-foreground">
+                  <Users className="h-5 w-5 text-gold" />
+                  Lo más sofisticado no reemplaza a un equipo
+                </p>
+                <p className="mt-2 text-pretty text-sm leading-relaxed text-muted-foreground">
+                  Ningún nivel de tecnología reacciona solo: alguien tiene que ver la alerta,
+                  decidir y moverse. Por eso el sistema se apoya en un grupo de coordinación para
+                  el transporte de un lado a otro, no solo en sensores y un mapa.
+                </p>
+                <a
+                  {...leadProps(MESSAGES.escort)}
+                  className="mt-4 inline-flex items-center justify-center gap-2 rounded-md bg-gold px-5 py-2.5 text-xs font-semibold uppercase tracking-widest text-primary-foreground transition-all hover:gold-glow"
+                >
+                  Hablar de escolta y coordinación
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
+
+              {/* Las amenazas quedan como contexto: por qué hace falta todo lo anterior */}
+              <p className="mt-10 font-mono text-[11px] uppercase tracking-[0.25em] text-amber">
+                Cómo operan quienes roban carga
+              </p>
+              <h3 className="mt-2 text-balance font-sans text-lg font-bold uppercase leading-tight tracking-tight text-foreground">
+                Por qué hace falta todo esto
+              </h3>
+              <p className="mt-3 text-pretty text-sm leading-relaxed text-muted-foreground">
+                Sin manual ni pasos: toca cada táctica para ver qué hacemos.
               </p>
 
               <div className="mt-6 space-y-2.5">
@@ -180,36 +227,6 @@ export function ActionPlanModal({ open, onClose }: { open: boolean; onClose: () 
                     </div>
                   )
                 })}
-              </div>
-
-              {/* El camión: la misma demostración, ahora dentro del plan de acción */}
-              <div ref={truckRef} className="mt-8 scroll-mt-4">
-                <h3 className="font-sans text-lg font-bold uppercase tracking-tight text-foreground">
-                  La tecnología, por niveles
-                </h3>
-                <div className="mt-4">
-                  <SecurityTruck jumpTo={jumpTo} />
-                </div>
-              </div>
-
-              {/* El argumento de fondo */}
-              <div className="mt-8 rounded-xl border border-gold/40 bg-gold/5 p-5 sm:p-6">
-                <p className="flex items-center gap-2 font-sans text-base font-semibold text-foreground">
-                  <Users className="h-5 w-5 text-gold" />
-                  Lo más sofisticado no reemplaza a un equipo
-                </p>
-                <p className="mt-2 text-pretty text-sm leading-relaxed text-muted-foreground">
-                  Ningún nivel de tecnología reacciona solo: alguien tiene que ver la alerta,
-                  decidir y moverse. Por eso el sistema se apoya en un grupo de coordinación para
-                  el transporte de un lado a otro, no solo en sensores y un mapa.
-                </p>
-                <a
-                  {...leadProps(MESSAGES.escort)}
-                  className="mt-4 inline-flex items-center justify-center gap-2 rounded-md bg-gold px-5 py-2.5 text-xs font-semibold uppercase tracking-widest text-primary-foreground transition-all hover:gold-glow"
-                >
-                  Hablar de escolta y coordinación
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </a>
               </div>
 
               <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
