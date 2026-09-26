@@ -35,6 +35,7 @@ export function TruckArt({
   pings = false,
   jammed = false,
   buffering = false,
+  showEscort = true,
   className,
 }: {
   level: LevelId
@@ -46,6 +47,12 @@ export function TruckArt({
   jammed?: boolean
   /** Sin satélite (niveles 1-3) y bloqueado: el equipo sigue guardando el recorrido en local. */
   buffering?: boolean
+  /**
+   * El auto escolta. A diferencia de los puntos 1-7, no depende del nivel:
+   * está o no está, y esa es justo la comparación que se quiere mostrar. No
+   * es redundancia técnica, es presencia humana.
+   */
+  showEscort?: boolean
   className?: string
 }) {
   const on = new Set(activePoints(level))
@@ -70,7 +77,7 @@ export function TruckArt({
 
   return (
     <svg
-      viewBox="0 -84 900 484"
+      viewBox="0 -84 1180 484"
       role="img"
       aria-label={`Camión de carga con los puntos de instalación del ${LEVELS[level - 1].name}`}
       className={className}
@@ -80,7 +87,10 @@ export function TruckArt({
 
       {/* Suelo */}
       <ellipse cx={470} cy={368} rx={400} ry={9} fill="#000" opacity={0.4} />
-      <line x1={40} y1={364} x2={860} y2={364} stroke={SLATE} strokeWidth={2} />
+      <line x1={40} y1={364} x2={1140} y2={364} stroke={SLATE} strokeWidth={2} />
+      {/* Sombra aparte para el auto escolta: el espacio vacío entre las dos
+          sombras es lo que se lee como "a distancia". */}
+      <ellipse cx={1031} cy={332} rx={100} ry={7} fill="#000" opacity={0.4} />
 
       {/* Caja de carga */}
       <rect
@@ -287,6 +297,67 @@ export function TruckArt({
           strokeWidth={2}
         />
       ))}
+
+      {/* Auto escolta: siempre presente o siempre ausente, según el interruptor.
+          No es un punto numerado -- es una categoría aparte, deliberadamente. */}
+      <g className="truck-escort" data-on={showEscort}>
+        {/* Halo discreto: el auto no quiere ser visto */}
+        <rect x={936} y={208} width={200} height={128} rx={18} className="truck-escort-halo" fill="none" strokeWidth={1.5} strokeDasharray="3 5" />
+
+        {/* Carrocería */}
+        <path
+          className="truck-escort-body"
+          d="M 946 300 L 946 280 Q 946 268 958 262 L 972 252 Q 984 226 1004 224 L 1044 224 Q 1058 224 1066 236 L 1082 258 L 1100 268 Q 1112 272 1116 284 L 1116 300 Z"
+          strokeWidth={2.5}
+          strokeLinejoin="round"
+        />
+        <path
+          className="truck-escort-body"
+          d="M 972 252 L 1004 226 L 1044 226 L 1064 252 Z"
+          fill="#0f1a2b"
+          strokeWidth={1.5}
+        />
+        <path d="M 1018 226 L 1018 252" stroke={SLATE} strokeWidth={1.5} />
+        <rect x={956} y={296} width={170} height={8} rx={2} fill="#1d1f26" stroke={SLATE} strokeWidth={1.5} />
+
+        {/* Ruedas */}
+        {[992, 1078].map((cx) => (
+          <g key={cx}>
+            <circle cx={cx} cy={324} r={27} fill="#09090b" />
+            <circle cx={cx} cy={324} r={23} fill="#0d0e12" stroke={SLATE} strokeWidth={3} />
+            <circle cx={cx} cy={324} r={10} fill="#1b1d24" stroke={SLATE} strokeWidth={1.5} />
+            <circle cx={cx} cy={324} r={3} fill={SLATE} />
+          </g>
+        ))}
+
+        <text x={1031} y={352} textAnchor="middle" fontSize={11} fontWeight={700} letterSpacing={0.5} className="truck-escort-label">
+          AUTO ESCOLTA
+        </text>
+        <text x={1031} y={196} textAnchor="middle" fontSize={10} className="truck-escort-caption">
+          Sigue a distancia · no interviene
+        </text>
+
+        {/* Aviso directo a 133 y al dueño: funciona aunque el inhibidor bloquee
+            al camión, porque el auto no depende de esa radiofrecuencia. */}
+        <g transform="translate(1031 190)">
+          <g className="truck-escort-alert" data-on={jammed}>
+            <rect x={-9} y={-15} width={18} height={28} rx={3} strokeWidth={1.5} />
+            <line x1={-9} y1={-4} x2={9} y2={-4} strokeWidth={1} opacity={0.6} />
+            <path d="M -7 -15 Q -44 -32 -82 -37" fill="none" strokeWidth={1.5} strokeDasharray="3 4" />
+            <path d="M 7 -15 Q 44 -32 82 -37" fill="none" strokeWidth={1.5} strokeDasharray="3 4" />
+            <text x={-90} y={-40} textAnchor="end" fontSize={11} fontWeight={700}>133</text>
+            <text x={90} y={-40} textAnchor="start" fontSize={11} fontWeight={700}>Dueño</text>
+          </g>
+        </g>
+      </g>
+
+      {/* Cuando el auto no está: el hueco queda a la vista, a propósito */}
+      <g className="truck-escort-ghost" data-on={!showEscort}>
+        <rect x={946} y={224} width={170} height={76} rx={10} fill="none" strokeWidth={1.5} strokeDasharray="4 6" />
+        <text x={1031} y={352} textAnchor="middle" fontSize={11} fontWeight={700} letterSpacing={0.5}>
+          SIN ESCOLTA
+        </text>
+      </g>
 
       {/* Marcadores numerados */}
       {PTS.map((p) => (

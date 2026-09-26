@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useInView, useReducedMotion } from 'framer-motion'
-import { ArrowRight, Radar, ShieldCheck, Siren, CircleCheck, TriangleAlert } from 'lucide-react'
+import { ArrowRight, Radar, ShieldCheck, Siren, CircleCheck, TriangleAlert, Car } from 'lucide-react'
 import { TruckArt } from '@/components/truck-art'
 import {
   BASE_INCLUDED,
@@ -33,6 +33,7 @@ export function SecurityTruck({
   const [interacted, setInteracted] = useState(false)
   const [consultas, setConsultas] = useState(0) // consultas de posición por satélite (nivel 4)
   const [robbery, setRobbery] = useState<'idle' | 'jamming' | 'recovered'>('idle')
+  const [showEscort, setShowEscort] = useState(true)
   const ref = useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: true, margin: '-20% 0px' })
   const reduce = useReducedMotion()
@@ -141,13 +142,42 @@ export function SecurityTruck({
       </div>
 
       {/* Camión */}
+      {/* Interruptor del auto escolta: aparte de los niveles, a propósito.
+          No es redundancia tecnológica, es la comparación real: con o sin. */}
+      <div className="mt-5 flex items-center justify-between gap-3 rounded-lg border border-border bg-background/60 px-4 py-3">
+        <div className="flex items-center gap-2.5">
+          <Car className="h-4 w-4 shrink-0 text-gold" />
+          <span className="text-pretty text-sm leading-snug text-foreground/90">
+            {showEscort
+              ? 'Con auto escolta: alguien lo está viendo ahora mismo.'
+              : 'Sin auto escolta: solo queda la tecnología.'}
+          </span>
+        </div>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={showEscort}
+          onClick={() => setShowEscort((v) => !v)}
+          className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
+            showEscort ? 'bg-gold' : 'bg-border'
+          }`}
+        >
+          <span
+            className={`inline-block h-4 w-4 transform rounded-full bg-background transition-transform ${
+              showEscort ? 'translate-x-6' : 'translate-x-1'
+            }`}
+          />
+        </button>
+      </div>
+
       <TruckArt
         level={level}
         fresh={fresh}
         pings={!reduce}
         jammed={robbery === 'jamming'}
         buffering={robbery === 'jamming' && level < 4}
-        className="mt-5 h-auto w-full"
+        showEscort={showEscort}
+        className="mt-4 h-auto w-full"
       />
 
       {/* Simular robo: corta la señal y muestra cómo el equipo intenta avisar */}
@@ -167,6 +197,7 @@ export function SecurityTruck({
               (level === 4
                 ? 'El satélite usa otra banda: siguió reportando durante todo el bloqueo. No se perdió nada.'
                 : 'Señal recuperada: el equipo entregó el tramo que guardó mientras estuvo bloqueado. Más antenas locales no habrían ayudado — todas caen en el mismo radio.')}
+            {robbery === 'jamming' && showEscort && ' El auto escolta no depende de esa señal: ya avisó a 133 y al dueño.'}
             {robbery === 'idle' &&
               'Simula un inhibidor y mira cómo intenta avisar el equipo en este nivel.'}
           </p>

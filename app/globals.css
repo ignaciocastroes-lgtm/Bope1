@@ -241,6 +241,33 @@ html {
 .truck-marker[data-jammed='true'] .truck-num { fill: var(--destructive); }
 .truck-marker[data-jammed='true'] .truck-hid { stroke: var(--destructive); }
 
+/* Auto escolta: no depende del nivel, depende del interruptor. Discreto
+   a propósito (halo punteado, sin marca a la vista) — está para ver y
+   avisar, no para intimidar. */
+.truck-escort { opacity: 0; transition: opacity 0.5s ease; }
+.truck-escort[data-on='true'] { opacity: 1; }
+.truck-escort-halo { stroke: var(--gold-muted); opacity: 0.5; }
+.truck-escort-body { stroke: var(--gold); fill: #15161b; }
+.truck-escort-label { fill: var(--gold-muted); letter-spacing: 0.05em; }
+.truck-escort-caption { fill: var(--muted-foreground, #8a8a93); }
+
+.truck-escort-ghost { opacity: 0; transition: opacity 0.5s ease; }
+.truck-escort-ghost[data-on='true'] { opacity: 0.55; }
+.truck-escort-ghost rect { stroke: var(--gold-muted); }
+.truck-escort-ghost text { fill: var(--gold-muted); }
+
+.truck-escort-alert { opacity: 0; }
+.truck-escort-alert[data-on='true'] {
+  opacity: 1;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: truck-jammer-pop 0.35s ease-out;
+}
+.truck-escort-alert rect { fill: rgba(212, 175, 55, 0.12); stroke: var(--gold); }
+.truck-escort-alert path { stroke: var(--gold); }
+.truck-escort-alert line { stroke: var(--gold); }
+.truck-escort-alert text { fill: var(--gold); }
+
 /* El inhibidor/jammer del atacante: en verde, a propósito, para que se lea como
    "el otro bando" y no se confunda con el dorado del equipo propio. */
 .truck-jammer { opacity: 0; transition: opacity 0.3s ease; }
@@ -273,6 +300,7 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .truck-escort-alert[data-on='true'],
   .truck-beam[data-on='true'],
   .truck-link[data-on='true'],
   .truck-marker[data-fresh='true'] .truck-pulse,
