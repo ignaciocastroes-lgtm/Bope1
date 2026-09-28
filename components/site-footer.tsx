@@ -1,11 +1,22 @@
 'use client'
 
 import { useState } from 'react'
-import { MessageCircle, Mail, ArrowRight } from 'lucide-react'
+import { MessageCircle, Mail, ArrowRight, Phone, UserPlus } from 'lucide-react'
 import { MapPin } from 'lucide-react'
 import { BopeLogo, LinkedInIcon } from '@/components/brand'
 import { AboutModal } from '@/components/about-modal'
-import { BUSINESS_ADDRESS, BUSINESS_EMAIL, LINKEDIN_PROFILE_URL, MESSAGES, hasWhatsApp, leadProps } from '@/lib/contact'
+import {
+  BUSINESS_ADDRESS,
+  BUSINESS_EMAIL,
+  LINKEDIN_PROFILE_URL,
+  MESSAGES,
+  VCARD_FILENAME,
+  VCARD_PATH,
+  hasWhatsApp,
+  leadProps,
+  phoneDisplay,
+  phoneHref,
+} from '@/lib/contact'
 
 export function SiteFooter() {
   const [aboutOpen, setAboutOpen] = useState(false)
@@ -61,6 +72,12 @@ export function SiteFooter() {
               Contacto
             </p>
             <div className="mt-4 flex flex-col gap-3 text-sm">
+              {hasWhatsApp && (
+                <a href={phoneHref} className="flex items-center gap-2 text-muted-foreground hover:text-gold">
+                  <Phone className="h-4 w-4 text-gold" />
+                  {phoneDisplay}
+                </a>
+              )}
               <a
                 href={`mailto:${BUSINESS_EMAIL}`}
                 className="flex items-center gap-2 text-muted-foreground hover:text-gold"
@@ -72,6 +89,16 @@ export function SiteFooter() {
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
                 <span>{BUSINESS_ADDRESS}</span>
               </p>
+              {hasWhatsApp && (
+                <a
+                  href={VCARD_PATH}
+                  download={VCARD_FILENAME}
+                  className="mt-1 flex items-center gap-2 text-muted-foreground hover:text-gold"
+                >
+                  <UserPlus className="h-4 w-4 text-gold" />
+                  Guardar contacto
+                </a>
+              )}
               <div className="mt-2 flex gap-3">
                 <a
                   href={LINKEDIN_PROFILE_URL}

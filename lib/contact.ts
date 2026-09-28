@@ -13,7 +13,13 @@
 
 export const BUSINESS_EMAIL = 'Bope.Security@gmail.com'
 
-export const BUSINESS_ADDRESS = 'Moneda 812, of. 601, Santiago, Chile'
+export const BUSINESS_ADDRESS_PARTS = {
+  street: 'Moneda 812, of. 601',
+  city: 'Santiago',
+  country: 'Chile',
+} as const
+
+export const BUSINESS_ADDRESS = `${BUSINESS_ADDRESS_PARTS.street}, ${BUSINESS_ADDRESS_PARTS.city}, ${BUSINESS_ADDRESS_PARTS.country}`
 
 /** Perfil de LinkedIn de BOPE Security, sin parámetros de seguimiento. */
 export const LINKEDIN_PROFILE_URL = 'https://www.linkedin.com/in/bope-security-53a42040b'
@@ -26,6 +32,26 @@ const digits = (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '').replace(/\D/g, ''
 
 /** Un número chileno con código de país tiene 11 dígitos (569XXXXXXXX). */
 export const hasWhatsApp = digits.length >= 10
+
+/** Solo dígitos, tal como viene de la variable (sirve para armar enlaces y la tarjeta de contacto). */
+export const WHATSAPP_DIGITS = digits
+
+/**
+ * El mismo número del WhatsApp de la empresa, listo para mostrarse en pantalla:
+ * "569XXXXXXXX" -> "+56 9 XXXX XXXX". Si no es un celular chileno, "+" y los dígitos.
+ * Vacío mientras la variable no esté configurada.
+ */
+export const phoneDisplay = !hasWhatsApp
+  ? ''
+  : /^569\d{8}$/.test(digits)
+    ? `+56 9 ${digits.slice(3, 7)} ${digits.slice(7)}`
+    : `+${digits}`
+
+export const phoneHref = hasWhatsApp ? `tel:+${digits}` : ''
+
+/** Tarjeta de contacto (.vcf): al tocarla el teléfono ofrece agregar el contacto. */
+export const VCARD_PATH = '/bope-security.vcf'
+export const VCARD_FILENAME = 'BOPE-Security.vcf'
 
 export const OPEN_QUOTE_EVENT = 'open-quote-modal'
 

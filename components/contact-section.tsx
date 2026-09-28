@@ -2,9 +2,19 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, ShieldCheck } from 'lucide-react'
+import { ArrowRight, MessageCircle, Phone, ShieldCheck, UserPlus } from 'lucide-react'
 import { MapPin } from 'lucide-react'
-import { BUSINESS_ADDRESS, hasWhatsApp, sendLead } from '@/lib/contact'
+import {
+  BUSINESS_ADDRESS,
+  MESSAGES,
+  VCARD_FILENAME,
+  VCARD_PATH,
+  hasWhatsApp,
+  leadProps,
+  phoneDisplay,
+  phoneHref,
+  sendLead,
+} from '@/lib/contact'
 
 const services = [
   'Escolta de Carga',
@@ -47,6 +57,34 @@ export function ContactSection() {
             <MapPin className="h-4 w-4 text-gold" />
             {BUSINESS_ADDRESS}
           </p>
+
+          {/* El teléfono a la vista: es el WhatsApp de la empresa, el mismo de todos los botones */}
+          {hasWhatsApp && (
+            <div className="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <a
+                href={phoneHref}
+                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-gold/40 hover:text-gold"
+              >
+                <Phone className="h-4 w-4 text-gold" />
+                {phoneDisplay}
+              </a>
+              <a
+                {...leadProps(MESSAGES.expert)}
+                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-gold/40 hover:text-gold"
+              >
+                <MessageCircle className="h-4 w-4 text-emerald-500" />
+                Escribir por WhatsApp
+              </a>
+              <a
+                href={VCARD_PATH}
+                download={VCARD_FILENAME}
+                className="inline-flex items-center gap-2 rounded-md border border-gold/40 bg-gold/10 px-4 py-2.5 text-sm font-semibold text-gold transition-colors hover:bg-gold/20"
+              >
+                <UserPlus className="h-4 w-4" />
+                Guardar contacto
+              </a>
+            </div>
+          )}
         </div>
 
         <div id="cobertura" className="mb-12 scroll-mt-16 text-center">
