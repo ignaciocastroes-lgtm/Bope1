@@ -10,7 +10,7 @@ import { MESSAGES, leadProps, openQuote } from '@/lib/contact'
 
 const telemetry = [
   { icon: Signal, label: 'GPS', value: 'LOCK 97°E' },
-  { icon: Navigation, label: 'Ruta', value: '78 · Autopista del Sol' },
+  { icon: Navigation, label: 'Ruta', value: 'Ruta 5 Sur' },
   { icon: Gauge, label: 'Velocidad', value: '92.9 km/h' },
   { icon: Radar, label: 'Status', value: 'EN RUTA · MONITOREADA' },
 ]

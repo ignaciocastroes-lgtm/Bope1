@@ -13,22 +13,15 @@ const services = [
   'Asesoría de Riesgos',
 ]
 
-const coverage = [
-  'San Antonio',
-  'Melipilla',
-  'Talagante',
-  'Maipú',
-  'Santiago Centro',
-  'Ruta 78',
-  'Ruta 68',
-  'Autopista del Sol',
-]
+// Cobertura nacional: los equipos parten desde estas bases en la zona central
+// hacia cualquier punto del país (no es servicio local en cada región).
+const bases = ['Santiago', 'San Antonio', 'Rancagua']
 
 const fields = [
   { id: 'empresa', label: 'Empresa / Transportista', type: 'text', ph: 'Transportes Ejemplo Ltda.' },
   { id: 'telefono', label: 'Teléfono de Contacto', type: 'tel', ph: '+56 9 0000 0000' },
   { id: 'correo', label: 'Correo Electrónico', type: 'email', ph: 'operaciones@empresa.cl' },
-  { id: 'ruta', label: 'Tramo / Ruta', type: 'text', ph: 'San Antonio → Santiago' },
+  { id: 'ruta', label: 'Tramo / Ruta', type: 'text', ph: 'Santiago → Antofagasta' },
   { id: 'carga', label: 'Tipo de Carga', type: 'text', ph: 'Carga refrigerada / alto valor' },
 ]
 
@@ -57,14 +50,18 @@ export function ContactSection() {
         </div>
 
         <div id="cobertura" className="mb-12 scroll-mt-16 text-center">
-          <p className="text-xs uppercase tracking-widest text-muted-foreground">Cobertura</p>
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-gold">Cobertura nacional</p>
+          <p className="mx-auto mt-3 max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground">
+            Salimos desde nuestras bases en la zona central hacia cualquier punto del país.
+          </p>
           <div className="mt-4 flex flex-wrap justify-center gap-2.5">
-            {coverage.map((c) => (
+            {bases.map((b) => (
               <span
-                key={c}
-                className="rounded-full border border-border bg-card px-3.5 py-1.5 text-xs text-muted-foreground transition-colors hover:border-gold/40 hover:text-gold"
+                key={b}
+                className="inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold/5 px-3.5 py-1.5 text-xs font-medium text-foreground/90"
               >
-                {c}
+                <MapPin className="h-3 w-3 text-gold" />
+                {b}
               </span>
             ))}
           </div>

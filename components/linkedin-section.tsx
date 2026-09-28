@@ -87,12 +87,12 @@ export function LinkedInSection() {
             <div className="relative aspect-[16/9] w-full border-y border-border">
               <Image
                 src="/monitoring-still.webp"
-                alt="Captura de cámara de monitoreo de carretera mostrando un camión de carga bajo vigilancia nocturna"
+                alt="Imagen ilustrativa de un camión de carga de noche en carretera"
                 fill
                 className="object-cover"
               />
               <span className="absolute left-3 top-3 rounded border border-gold/40 bg-background/70 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-gold backdrop-blur">
-                CAM · RUTA 78
+                Imagen ilustrativa
               </span>
             </div>
 
